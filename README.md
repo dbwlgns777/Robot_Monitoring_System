@@ -36,6 +36,44 @@ Mock Provider를 `Spring Boot REST API` 구현체로 교체하고 `RealtimeClien
 
 요구사항: Node.js 20 이상, npm 10 이상
 
+> `npm`은 별도 프로그램이 아니라 Node.js 설치 파일에 함께 포함됩니다. PowerShell에서
+> `npm`을 찾을 수 없다는 메시지가 표시되면 아래 **Windows/IntelliJ 설치 안내**를 먼저 진행하세요.
+
+### Windows 및 IntelliJ에서 처음 실행하기
+
+1. [Node.js 공식 다운로드](https://nodejs.org/)에서 **LTS 버전**의 Windows Installer(`.msi`)를 내려받습니다.
+2. 설치 과정에서 **Add to PATH**와 **npm package manager** 항목이 선택된 상태로 설치합니다.
+3. 열려 있던 IntelliJ와 PowerShell 창을 모두 닫고 IntelliJ를 다시 실행합니다. 기존 터미널은 변경된 PATH를 자동으로 읽지 못합니다.
+4. IntelliJ에서 `File > Settings > Languages & Frameworks > JavaScript Runtime`으로 이동해 설치된 `node.exe`를 선택합니다.
+5. IntelliJ Terminal에서 다음 명령으로 설치 상태를 확인합니다.
+
+```powershell
+node --version
+npm.cmd --version
+where.exe node
+where.exe npm
+```
+
+`node`와 `npm`의 경로가 출력되면 프로젝트 루트에서 다음을 실행합니다.
+
+```powershell
+Copy-Item .env.example .env
+npm.cmd install
+npm.cmd run dev
+```
+
+PowerShell 실행 정책 때문에 `npm.ps1`을 실행할 수 없다는 오류가 나오는 경우에도 `npm.cmd`를 사용하면 전역 실행 정책을 변경하지 않고 실행할 수 있습니다.
+
+#### Node.js를 설치했는데도 명령을 찾지 못하는 경우
+
+기본 설치 위치인 `C:\Program Files\nodejs\node.exe`가 존재하는지 확인합니다. 파일은 있지만 `where.exe node`가 아무 결과도 출력하지 않는다면 Windows의 **시스템 환경 변수 > Path**에 아래 경로를 추가한 뒤 IntelliJ를 완전히 재시작합니다.
+
+```text
+C:\Program Files\nodejs\
+```
+
+Node.js가 실제로 설치되지 않았다면 PATH만 추가하지 말고 공식 Windows Installer로 먼저 설치해야 합니다.
+
 ```bash
 cp .env.example .env
 npm install
