@@ -4,8 +4,6 @@ services:
     container_name: prima-factory-360-mysql
     environment:
       MYSQL_DATABASE: prima_factory_360
-      MYSQL_USER: ${DB_USER:-prima_app}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-prima_local_password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-prima_local_root}
       TZ: Asia/Seoul
     ports: ["3306:3306"]
