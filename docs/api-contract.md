@@ -1,0 +1,19 @@
+# API contract
+
+Base `/api/v1`; camelCase JSON; ISO-8601 timestamps; session cookie with `credentials: include`.
+
+All responses use `{ "success": true, "data": ..., "message": null }`; errors use `success:false` and an HTTP error status.
+
+| Purpose | Method/path | Response data |
+|---|---|---|
+| Login | `POST /auth/login` | `{id,username,name}` |
+| Signup | `POST /auth/signup` | `{status:"PENDING"}` |
+| Session | `GET /auth/me` | current user |
+| Dashboard | `GET /dashboard/summary` | KPI/current state summary |
+| Snapshot | `GET /realtime/equipment` | `Equipment[]` |
+| Detail/trend | `GET /realtime/equipment/{id}[/trend]` | equipment / telemetry |
+| Production/downtime/alarms | `GET /analytics/{name}` | filtered summary/event rows |
+| Equipment/product | `/equipment`, `/products` | list, POST, PUT, PATCH deactivate |
+| Collection | `GET /system/collection-health` | collection health rows |
+
+STOMP endpoint `/ws`; topics `/topic/equipment-status`, `/topic/dashboard-kpi`, `/topic/collection-health`. Quality-unlinked KPI is `{qualityDataLinked:false, ppm:null, oee:null}`. Estimated loss is missed production, not defects.

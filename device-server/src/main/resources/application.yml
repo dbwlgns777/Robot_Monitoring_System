@@ -1,0 +1,13 @@
+spring:
+  application.name: prima-factory-360-device-server
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/prima_factory_360?serverTimezone=UTC&characterEncoding=utf8}
+    username: ${DB_USER:prima_app}
+    password: ${DB_PASSWORD:change-me}
+server.port: 8081
+management.endpoints.web.exposure.include: health,info
+simulator:
+  enabled: ${SIMULATOR_ENABLED:true}
+  interval-ms: ${SIMULATOR_INTERVAL_MS:1000}
+  random-seed: ${SIMULATOR_RANDOM_SEED:360}
+mybatis.configuration.map-underscore-to-camel-case: true
