@@ -1,0 +1,1 @@
+<component name="ProjectRunConfigurationManager"><configuration default="false" name="Device Server" type="SpringBootApplicationConfigurationType"><module name="device-server.main"/><option name="SPRING_BOOT_MAIN_CLASS" value="com.prima.factory.device.DeviceServerApplication"/></configuration></component>
