@@ -63,6 +63,16 @@ IntelliJ에서 Gradle 프로젝트로 연 후 공유 설정 `Backend`, `Device S
 
 저장소에는 표준 Gradle Wrapper 스크립트와 설정이 포함되어 있으므로 전역 Gradle 설치가 없어도 됩니다. PR 시스템의 바이너리 파일 제한을 피하기 위해 Wrapper JAR는 텍스트 payload인 `gradle-wrapper.jar.b64`로 보관하며, `gradlew` 또는 `gradlew.bat` 첫 실행 시 로컬 JAR로 자동 복원됩니다. 생성된 JAR는 Git에서 제외됩니다. 최초 연결 시 Gradle 배포파일과 Spring 의존성을 내려받으므로 인터넷 연결이 필요합니다.
 
+> Git Pull 직후 `gradle/wrapper/gradle-wrapper.jar`가 없는 것은 정상입니다. 먼저 `gradle-wrapper.jar.b64`가 있는지 확인한 다음 `gradlew.bat`을 한 번 실행하면 JAR가 생성됩니다.
+
+```powershell
+Get-Item .\gradle\wrapper\gradle-wrapper.jar.b64
+.\gradlew.bat --version
+Get-Item .\gradle\wrapper\gradle-wrapper.jar
+```
+
+두 번째 명령은 JAR를 복원한 뒤 Gradle 8.14.4를 내려받습니다. 회사 방화벽이나 프록시가 다운로드를 차단하면 JAR는 생성되어도 Gradle 다운로드 오류가 별도로 표시될 수 있습니다.
+
 ## 주소
 
 | Service | URL |
