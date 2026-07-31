@@ -73,6 +73,19 @@ Get-Item .\gradle\wrapper\gradle-wrapper.jar
 
 두 번째 명령은 JAR를 복원한 뒤 Gradle 8.14.4를 내려받습니다. 회사 방화벽이나 프록시가 다운로드를 차단하면 JAR는 생성되어도 Gradle 다운로드 오류가 별도로 표시될 수 있습니다.
 
+`gradlew.bat --version` 결과의 `Launcher JVM`과 `Daemon JVM`은 모두 Java 21이어야 합니다. Java 17로 표시되면 JDK 21을 설치한 뒤 현재 PowerShell의 `JAVA_HOME`을 변경하고 기존 Gradle daemon을 종료합니다.
+
+```powershell
+# 실제 설치된 JDK 21 폴더로 변경하세요.
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.x-hotspot"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+.\gradlew.bat --stop
+java -version
+.\gradlew.bat --version
+```
+
+IntelliJ에서도 `Settings > Build Tools > Gradle > Gradle JVM`을 같은 JDK 21로 지정한 뒤 Gradle 프로젝트를 다시 로드해야 합니다.
+
 ## 주소
 
 | Service | URL |
