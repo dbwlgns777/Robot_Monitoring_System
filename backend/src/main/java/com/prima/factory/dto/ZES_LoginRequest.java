@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record ZES_LoginRequest(
     @JsonProperty("username") @NotBlank String ZES_username,
-    @JsonProperty("password") @NotBlank String ZES_password)
+    @JsonProperty("password") @NotBlank String ZES_password,
+    @JsonProperty("rememberMe") boolean ZES_rememberMe)
 {
 }

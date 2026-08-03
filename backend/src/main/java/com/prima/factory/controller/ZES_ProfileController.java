@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prima.factory.dto.ZES_ApiResponse;
 import com.prima.factory.dto.ZES_ProfileUpdateRequest;
+import com.prima.factory.dto.ZES_PasswordChangeRequest;
 import com.prima.factory.service.ZES_ProfileService;
 
 @RestController
@@ -27,6 +28,14 @@ public class ZES_ProfileController
     ZES_ApiResponse<?> ZES_profile(HttpSession ZES_session)
     {
         return ZES_ApiResponse.ZES_ok(ZES_profileService.ZES_profile(ZES_session));
+    }
+
+    @PutMapping("/password")
+    ZES_ApiResponse<?> ZES_changePassword(
+        @Valid @RequestBody ZES_PasswordChangeRequest ZES_request, HttpSession ZES_session)
+    {
+        ZES_profileService.ZES_changePassword(ZES_request, ZES_session);
+        return ZES_ApiResponse.ZES_ok(java.util.Map.of());
     }
 
     @PutMapping

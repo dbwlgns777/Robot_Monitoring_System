@@ -14,6 +14,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,7 +47,8 @@ class ZES_AuthControllerTest
 
         var ZES_session = new MockHttpSession();
         var ZES_response = new ZES_AuthController(new ZES_AuthService(ZES_users, ZES_encoder))
-            .ZES_login(new ZES_LoginRequest("admin", "password"), ZES_session);
+            .ZES_login(new ZES_LoginRequest("admin", "password", false), ZES_session,
+                new MockHttpServletRequest(), new MockHttpServletResponse());
 
         assertTrue(ZES_response.ZES_success());
         assertEquals(1L, ZES_session.getAttribute("USER_ID"));

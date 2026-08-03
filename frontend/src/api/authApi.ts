@@ -4,7 +4,7 @@ export interface AuthenticatedUser{id:number;username:string;name:string;roles:s
 interface CsrfData{token:string;headerName:string}
 async function stateMutation<T>(path:string,method:'POST'|'PUT',body?:unknown):Promise<T>{const csrf=await request<CsrfData>('/auth/csrf');return request<T>(path,{method,headers:{[csrf.headerName]:csrf.token},body:body===undefined?undefined:JSON.stringify(body)})}
 export const authApi={
- login:(username:string,password:string)=>request<AuthenticatedUser>('/auth/login',{method:'POST',body:JSON.stringify({username,password})}),
+ login:(username:string,password:string,rememberMe:boolean)=>request<AuthenticatedUser>('/auth/login',{method:'POST',body:JSON.stringify({username,password,rememberMe})}),
  register:(form:RegistrationForm)=>request<{status:'PENDING'}>('/auth/signup',{method:'POST',body:JSON.stringify(form)}),
  logout:()=>request('/auth/logout',{method:'POST'}),
  pendingRegistrations:()=>request<RegistrationRequest[]>('/admin/registration-requests'),
@@ -15,5 +15,6 @@ export const authApi={
  approveRegistration:(id:number,roleCode:string)=>stateMutation<{id:number;status:'APPROVED';userId:number;roleCode:string}>(`/admin/registration-requests/${id}/approve`,'POST',{roleCode}),
  rejectRegistration:(id:number)=>stateMutation<{id:number;status:'REJECTED'}>(`/admin/registration-requests/${id}/reject`,'POST'),
  updateUserRole:(id:number,roleCode:string)=>stateMutation<{userId:number;roleCode:string}>(`/admin/users/${id}/role`,'PUT',{roleCode}),
- updateProfile:(profile:Omit<UserProfile,'id'|'username'|'factoryName'>)=>stateMutation<UserProfile>('/profile','PUT',profile)
+ updateProfile:(profile:Omit<UserProfile,'id'|'username'|'factoryName'>)=>stateMutation<UserProfile>('/profile','PUT',profile),
+ changePassword:(currentPassword:string,newPassword:string,newPasswordConfirm:string)=>stateMutation<void>('/profile/password','PUT',{currentPassword,newPassword,newPasswordConfirm})
 };

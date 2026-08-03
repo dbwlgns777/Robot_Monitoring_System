@@ -9,6 +9,8 @@ describe('English UI translations',()=>
   expect(translateText('설비 등록 관리','en')).toBe('Equipment Management');
   expect(translateText('가입 승인 관리','en')).toBe('Signup Approval Management');
   expect(translateText('사용자 리스트','en')).toBe('User List');
+  expect(translateText('비밀번호 변경','en')).toBe('Change Password');
+  expect(translateText('수정','en')).toBe('Edit');
  });
  it('preserves Korean when Korean is selected',()=>
  {

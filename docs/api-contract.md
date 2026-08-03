@@ -20,9 +20,11 @@ All responses use `{ "success": true, "data": ..., "message": null }`; errors us
 
 | Purpose | Method/path | Response data |
 |---|---|---|
-| Login | `POST /auth/login` | `{id,username,name}` |
+| Login | `POST /auth/login` | Request `{username,password,rememberMe}`; response `{id,username,name,roles}`. `rememberMe=true` keeps the server session for 30 days. |
 | Signup | `POST /auth/signup` | `{status:"PENDING"}` |
 | Session | `GET /auth/me` | current user |
+| Profile | `GET /profile`, `PUT /profile` | Read or update the authenticated user's signup profile fields. |
+| Password | `PUT /profile/password` | Verify the current password and store a BCrypt hash of the new password. |
 | Dashboard | `GET /dashboard/summary` | KPI/current state summary |
 | Snapshot | `GET /realtime/equipment` | `Equipment[]` |
 | Detail/trend | `GET /realtime/equipment/{id}[/trend]` | equipment / telemetry |

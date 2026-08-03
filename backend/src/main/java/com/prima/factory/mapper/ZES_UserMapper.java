@@ -117,6 +117,14 @@ public interface ZES_UserMapper
         """)
     List<Map<String, Object>> ZES_findAllUsers();
 
+    @Select("SELECT password_hash FROM system_user WHERE id=#{ZES_userId}")
+    String ZES_findPasswordHash(@Param("ZES_userId") long ZES_userId);
+
+    @Update("UPDATE system_user SET password_hash=#{ZES_passwordHash} WHERE id=#{ZES_userId}")
+    int ZES_updatePassword(
+        @Param("ZES_userId") long ZES_userId,
+        @Param("ZES_passwordHash") String ZES_passwordHash);
+
     @Select("SELECT COUNT(*) FROM system_user WHERE id=#{ZES_userId}")
     int ZES_countUsersById(@Param("ZES_userId") long ZES_userId);
 
