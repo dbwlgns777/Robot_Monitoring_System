@@ -247,3 +247,13 @@ Get-Content .\common-domain\build\test-results\test\TEST-*.xml
 ```
 
 현재 모노레포의 루트 Gradle 프로젝트와 `backend`, `device-server`, `common-domain` 모듈 분리는 일반적인 멀티프로젝트 구조입니다. `common-domain:test` 실패는 폴더 구조가 아니라 테스트 실행 또는 테스트 결과 문제이며, XML 원인을 확인하기 전에는 모듈을 이동하거나 Gradle 구성을 반복 변경하지 않습니다.
+
+### Backend controller/service naming rule
+
+Backend HTTP controllers only validate/deserialise request arguments and delegate to a service. Business rules,
+transaction boundaries, and mapper calls belong to `ZES_*Service` classes. New application-owned controller,
+service, mapper, method, and variable identifiers use the `ZES_` prefix and Allman braces. Framework-defined
+entry points and overridden framework method names (for example Java `main`) keep their required names.
+
+Signup writes a `PENDING` row to `user_registration_request` in one transaction. The submitted factory name or
+code must match an active row in `factory`; duplicate active users and duplicate pending requests are rejected.
