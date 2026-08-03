@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.prima.factory.mapper.ZES_UserMapper;
+import com.prima.factory.dto.ZES_RegistrationApprovalRequest;
 
 @Service
 public class ZES_RegistrationApprovalService
@@ -28,8 +29,17 @@ public class ZES_RegistrationApprovalService
         return ZES_users.ZES_findPendingRegistrations();
     }
 
+    public List<Map<String, Object>> ZES_assignableRoles(HttpSession ZES_session)
+    {
+        ZES_requireAdmin(ZES_session);
+        return ZES_users.ZES_findAssignableRoles();
+    }
+
     @Transactional
-    public Map<String, Object> ZES_approve(long ZES_registrationId, HttpSession ZES_session)
+    public Map<String, Object> ZES_approve(
+        long ZES_registrationId,
+        ZES_RegistrationApprovalRequest ZES_request,
+        HttpSession ZES_session)
     {
         long ZES_reviewerId = ZES_requireAdmin(ZES_session);
         Map<String, Object> ZES_registration = ZES_getPendingRegistration(ZES_registrationId);
@@ -39,11 +49,10 @@ public class ZES_RegistrationApprovalService
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 생성된 사용자 아이디입니다.");
         }
 
-        Long ZES_roleId = ZES_users.ZES_findRoleIdByName(
-            String.valueOf(ZES_registration.get("requestedRole")));
+        Long ZES_roleId = ZES_users.ZES_findRoleIdByCode(ZES_request.ZES_roleCode());
         if (ZES_roleId == null)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "신청한 권한을 찾을 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "부여할 권한을 찾을 수 없습니다.");
         }
 
         Map<String, Object> ZES_user = new HashMap<>();
@@ -62,7 +71,11 @@ public class ZES_RegistrationApprovalService
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 처리된 가입 신청입니다.");
         }
-        return Map.of("id", ZES_registrationId, "status", "APPROVED", "userId", ZES_userId);
+        return Map.of(
+            "id", ZES_registrationId,
+            "status", "APPROVED",
+            "userId", ZES_userId,
+            "roleCode", ZES_request.ZES_roleCode());
     }
 
     @Transactional

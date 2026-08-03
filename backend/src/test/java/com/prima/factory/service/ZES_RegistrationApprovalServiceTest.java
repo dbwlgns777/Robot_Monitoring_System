@@ -17,6 +17,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.prima.factory.mapper.ZES_UserMapper;
+import com.prima.factory.dto.ZES_RegistrationApprovalRequest;
 
 class ZES_RegistrationApprovalServiceTest
 {
@@ -31,7 +32,7 @@ class ZES_RegistrationApprovalServiceTest
             "passwordHash", "bcrypt-hash",
             "requestedRole", "생산관리자",
             "status", "PENDING"));
-        when(ZES_users.ZES_findRoleIdByName("생산관리자")).thenReturn(2L);
+        when(ZES_users.ZES_findRoleIdByCode("ROLE_MANAGER")).thenReturn(2L);
         doAnswer(ZES_invocation ->
         {
             Map<String, Object> ZES_user = ZES_invocation.getArgument(0);
@@ -42,10 +43,12 @@ class ZES_RegistrationApprovalServiceTest
 
         MockHttpSession ZES_session = ZES_adminSession();
         Map<String, Object> ZES_result =
-            new ZES_RegistrationApprovalService(ZES_users).ZES_approve(10L, ZES_session);
+            new ZES_RegistrationApprovalService(ZES_users).ZES_approve(
+                10L, new ZES_RegistrationApprovalRequest("ROLE_MANAGER"), ZES_session);
 
         assertEquals("APPROVED", ZES_result.get("status"));
         assertEquals(20L, ZES_result.get("userId"));
+        assertEquals("ROLE_MANAGER", ZES_result.get("roleCode"));
         verify(ZES_users).ZES_insertUserRole(20L, 2L);
         verify(ZES_users).ZES_updateRegistrationStatus(10L, "APPROVED", 1L);
     }

@@ -58,7 +58,7 @@ INSERT IGNORE INTO permission(id,permission_code,permission_name) VALUES(1,'MONI
 INSERT IGNORE INTO role_permission VALUES(1,1),(2,1),(2,2),(3,1),(3,2),(4,1);
 -- Development only account: admin / password (BCrypt). Never seed this migration in production profile.
 INSERT IGNORE INTO system_user(id,username,full_name,password_hash,approval_status,is_locked,is_active) VALUES(1,'admin','개발 관리자','$2a$10$wyzaUYXo4NJTynqgVHn.su/gmZAqPF08oHlEeypKegf3CVr4iTPva','APPROVED',0,1);
-INSERT IGNORE INTO user_role VALUES(1,3);
+INSERT IGNORE INTO user_role(user_id,role_id) SELECT u.id,r.id FROM system_user u JOIN role r ON r.role_code='ROLE_ADMIN' WHERE u.username='admin';
 INSERT INTO service_heartbeat(service_name,status,last_heartbeat_at,details) VALUES('BACKEND','UP',CURRENT_TIMESTAMP(3),'seed'),('DEVICE_SERVER','UP',CURRENT_TIMESTAMP(3),'simulator'),('MYSQL','UP',CURRENT_TIMESTAMP(3),'community 8.x') ON DUPLICATE KEY UPDATE last_heartbeat_at=VALUES(last_heartbeat_at);
 INSERT IGNORE INTO backup_history(started_at,completed_at,status,file_path,size_bytes) VALUES(CURRENT_TIMESTAMP(3)-INTERVAL 8 HOUR,CURRENT_TIMESTAMP(3)-INTERVAL 479 MINUTE,'SUCCESS','/backup/prima_factory_360.sql',1048576);
 CREATE TABLE flyway_schema_history(installed_rank INT NOT NULL PRIMARY KEY,version VARCHAR(50),description VARCHAR(200) NOT NULL,type VARCHAR(20) NOT NULL,script VARCHAR(1000) NOT NULL,checksum INT,installed_by VARCHAR(100) NOT NULL,installed_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,execution_time INT NOT NULL,success BOOLEAN NOT NULL);

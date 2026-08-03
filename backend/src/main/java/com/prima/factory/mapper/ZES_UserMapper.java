@@ -89,8 +89,11 @@ public interface ZES_UserMapper
     Map<String, Object> ZES_findRegistrationForUpdate(
         @Param("ZES_registrationId") long ZES_registrationId);
 
-    @Select("SELECT id FROM role WHERE role_name = #{ZES_roleName} LIMIT 1")
-    Long ZES_findRoleIdByName(@Param("ZES_roleName") String ZES_roleName);
+    @Select("SELECT id FROM role WHERE role_code = #{ZES_roleCode} LIMIT 1")
+    Long ZES_findRoleIdByCode(@Param("ZES_roleCode") String ZES_roleCode);
+
+    @Select("SELECT role_code AS roleCode, role_name AS roleName FROM role ORDER BY id")
+    List<Map<String, Object>> ZES_findAssignableRoles();
 
     @Insert("""
         INSERT INTO system_user(

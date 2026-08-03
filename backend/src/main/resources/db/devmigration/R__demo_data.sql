@@ -21,6 +21,6 @@ INSERT INTO system_user(id,username,full_name,password_hash,approval_status,is_l
 VALUES(1,'admin','개발 관리자','$2a$10$wyzaUYXo4NJTynqgVHn.su/gmZAqPF08oHlEeypKegf3CVr4iTPva','APPROVED',0,1)
 ON DUPLICATE KEY UPDATE
  password_hash=VALUES(password_hash),approval_status='APPROVED',is_locked=0,is_active=1;
-INSERT IGNORE INTO user_role VALUES(1,3);
+INSERT IGNORE INTO user_role(user_id,role_id) SELECT u.id,r.id FROM system_user u JOIN role r ON r.role_code='ROLE_ADMIN' WHERE u.username='admin';
 INSERT INTO service_heartbeat(service_name,status,last_heartbeat_at,details) VALUES('BACKEND','UP',CURRENT_TIMESTAMP(3),'seed'),('DEVICE_SERVER','UP',CURRENT_TIMESTAMP(3),'simulator'),('MYSQL','UP',CURRENT_TIMESTAMP(3),'community 8.x') ON DUPLICATE KEY UPDATE last_heartbeat_at=VALUES(last_heartbeat_at);
 INSERT IGNORE INTO backup_history(started_at,completed_at,status,file_path,size_bytes) VALUES(CURRENT_TIMESTAMP(3)-INTERVAL 8 HOUR,CURRENT_TIMESTAMP(3)-INTERVAL 479 MINUTE,'SUCCESS','/backup/prima_factory_360.sql',1048576);

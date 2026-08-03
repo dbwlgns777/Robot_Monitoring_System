@@ -1,4 +1,4 @@
-import type {RegistrationForm,RegistrationRequest} from '../types/domain';
+import type {AssignableRole,RegistrationForm,RegistrationRequest} from '../types/domain';
 import {request} from '../services/apiClient';
 export interface AuthenticatedUser{id:number;username:string;name:string;roles:string[]}
 export const authApi={
@@ -6,6 +6,7 @@ export const authApi={
  register:(form:RegistrationForm)=>request<{status:'PENDING'}>('/auth/signup',{method:'POST',body:JSON.stringify(form)}),
  logout:()=>request('/auth/logout',{method:'POST'}),
  pendingRegistrations:()=>request<RegistrationRequest[]>('/admin/registration-requests'),
- approveRegistration:(id:number)=>request<{id:number;status:'APPROVED';userId:number}>(`/admin/registration-requests/${id}/approve`,{method:'POST'}),
+ assignableRoles:()=>request<AssignableRole[]>('/admin/registration-requests/roles'),
+ approveRegistration:(id:number,roleCode:string)=>request<{id:number;status:'APPROVED';userId:number;roleCode:string}>(`/admin/registration-requests/${id}/approve`,{method:'POST',body:JSON.stringify({roleCode})}),
  rejectRegistration:(id:number)=>request<{id:number;status:'REJECTED'}>(`/admin/registration-requests/${id}/reject`,{method:'POST'})
 };
