@@ -9,7 +9,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.prima.factory.mapper.UserMapper;
 
@@ -33,5 +36,10 @@ class AuthControllerTest {
 
         assertTrue(response.success());
         assertEquals(1L, session.getAttribute("USER_ID"));
+        var context = (SecurityContext) session.getAttribute(
+            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+        assertTrue(context.getAuthentication().isAuthenticated());
+        assertEquals("admin", context.getAuthentication().getPrincipal());
+        SecurityContextHolder.clearContext();
     }
 }

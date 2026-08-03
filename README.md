@@ -193,6 +193,14 @@ mysql -u root -p < database/dump/prima_factory_360_full.sql
 
 기본값은 `VITE_DATA_SOURCE=api`이며 API 오류를 Mock으로 숨기지 않습니다. 독립 UI 확인에만 `.env`에서 `VITE_DATA_SOURCE=mock`을 사용합니다. Vite proxy가 `/api/v1`과 `/ws`를 8080으로 전달해 session cookie가 유지됩니다.
 
+이전 루트 Frontend 설치에서 남은 `src/`, `node_modules/`, 루트 `package*.json` 등은 현재 `frontend/` 모듈이 사용하지 않습니다. Git에 추적되지 않는 로컬 잔여 파일은 아래 스크립트로 제거하며, 활성 `frontend/` 폴더는 보존합니다.
+
+```powershell
+.\scripts\cleanup-legacy-root-frontend.ps1
+```
+
+로그인 성공 후 보호 API가 403을 반환하면 서버 세션에 Spring Security 인증정보가 저장되지 않은 구버전 Backend일 수 있습니다. 최신 로그인 API는 `SPRING_SECURITY_CONTEXT`와 `USER_ID`를 같은 HTTP session에 저장하며, 인증 만료·권한 오류도 JSON `ApiResponse` 형식으로 반환합니다.
+
 ## 검증
 
 ```bash
