@@ -1,1 +1,7 @@
-<component name="ProjectRunConfigurationManager"><configuration default="false" name="Backend" type="SpringBootApplicationConfigurationType"><module name="backend.main"/><option name="SPRING_BOOT_MAIN_CLASS" value="com.prima.factory.PrimaFactoryBackendApplication"/></configuration></component>
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend" type="SpringBootApplicationConfigurationType">
+    <module name="backend.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.prima.factory.PrimaFactoryBackendApplication" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+  </configuration>
+</component>

@@ -51,6 +51,16 @@ npm --prefix frontend run dev
 
 IntelliJ에서 Gradle 프로젝트로 연 후 공유 설정 `Backend`, `Device Server`, `Frontend`를 개별 실행하거나 compound 설정 `PRIMA FACTORY 360`을 실행할 수 있습니다.
 
+`clean test bootJar` 성공 후에는 MySQL을 먼저 실행하고 루트 `.env`를 준비한 다음 IntelliJ 상단 실행 구성에서 `Backend`를 선택해 Run할 수 있습니다. 공유 Run Configuration은 루트 `.env`를 읽을 수 있도록 Working directory를 `$PROJECT_DIR$`로 고정합니다.
+
+1. MySQL을 시작하고 `prima_factory_360` schema를 dump 또는 Flyway로 준비합니다.
+2. `.env.example`을 루트 `.env`로 복사하고 `DB_USER`, `DB_PASSWORD`를 로컬 값으로 설정합니다.
+3. IntelliJ의 `Backend` 구성을 실행한 뒤 `http://localhost:8080/actuator/health`가 `UP`인지 확인합니다.
+4. `Device Server` 구성을 실행한 뒤 `http://localhost:8081/actuator/health`를 확인합니다.
+5. `Frontend` 구성을 실행하고 `http://localhost:5173`에 접속합니다.
+
+IntelliJ Community Edition에서 Spring Boot Run Configuration 유형을 사용할 수 없다면 `backend/src/main/java/com/prima/factory/PrimaFactoryBackendApplication.java`를 열고 `main` 메서드 옆 실행 아이콘으로 일반 Application 실행을 생성하십시오. 이 경우에도 Working directory는 저장소 루트, JRE는 Temurin 17로 지정해야 합니다.
+
 ### IntelliJ에서 “관련 Gradle 프로젝트가 연결되어 있지 않음”이 표시될 때
 
 `gradlew` 파일 자체를 프로젝트로 열지 말고 저장소 루트의 `settings.gradle.kts` 또는 `build.gradle.kts`를 Gradle 프로젝트로 연결해야 합니다.
