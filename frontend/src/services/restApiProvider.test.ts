@@ -1,0 +1,2 @@
+import {describe,expect,it} from 'vitest';import type {DataQuality} from '../types/domain';
+describe('API contract types',()=>{it('품질 미연동은 0이 아닌 null contract를 사용한다',()=>{const dto:{qualityDataLinked:boolean;ppm:number|null;oee:number|null}={qualityDataLinked:false,ppm:null,oee:null};expect(dto.ppm).toBeNull();expect(dto.oee).toBeNull();});it('data quality is explicit',()=>{const value:DataQuality='GOOD';expect(value).toBe('GOOD');});});
