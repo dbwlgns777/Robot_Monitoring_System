@@ -1,0 +1,1 @@
+import {mockApiProvider} from './mockApiProvider';import {restApiProvider} from './restApiProvider';export const monitoringProvider=import.meta.env.VITE_DATA_SOURCE==='mock'?mockApiProvider:restApiProvider;
