@@ -185,6 +185,8 @@ mysql -u root -p < database/dump/prima_factory_360_full.sql
 
 개발 전용 계정은 `admin` / `password`입니다. 운영 profile에서는 dev migration을 사용하지 말고 계정을 별도로 생성해야 합니다.
 
+로그인 시 `Encoded password does not look like BCrypt` 경고가 발생하면 `system_user.password_hash`가 API에서 `passwordHash`로 매핑되는 최신 Backend인지 확인하십시오. 인증 실패는 500으로 감추지 않고 401/403 상태와 API 오류 응답으로 반환합니다.
+
 ## Frontend data source
 
 기본값은 `VITE_DATA_SOURCE=api`이며 API 오류를 Mock으로 숨기지 않습니다. 독립 UI 확인에만 `.env`에서 `VITE_DATA_SOURCE=mock`을 사용합니다. Vite proxy가 `/api/v1`과 `/ws`를 8080으로 전달해 session cookie가 유지됩니다.
