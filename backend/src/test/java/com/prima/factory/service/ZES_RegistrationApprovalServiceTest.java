@@ -43,7 +43,7 @@ class ZES_RegistrationApprovalServiceTest
 
         MockHttpSession ZES_session = ZES_adminSession();
         Map<String, Object> ZES_result =
-            new ZES_RegistrationApprovalService(ZES_users).ZES_approve(
+            new ZES_RegistrationApprovalService(ZES_users, new ZES_AdminAccessService()).ZES_approve(
                 10L, new ZES_RegistrationApprovalRequest("ROLE_MANAGER"), ZES_session);
 
         assertEquals("APPROVED", ZES_result.get("status"));
@@ -61,7 +61,7 @@ class ZES_RegistrationApprovalServiceTest
         ZES_session.setAttribute("USER_ROLES", List.of("ROLE_MANAGER"));
 
         ResponseStatusException ZES_exception = assertThrows(ResponseStatusException.class,
-            () -> new ZES_RegistrationApprovalService(mock(ZES_UserMapper.class))
+            () -> new ZES_RegistrationApprovalService(mock(ZES_UserMapper.class), new ZES_AdminAccessService())
                 .ZES_pendingRegistrations(ZES_session));
 
         assertEquals(HttpStatus.FORBIDDEN, ZES_exception.getStatusCode());

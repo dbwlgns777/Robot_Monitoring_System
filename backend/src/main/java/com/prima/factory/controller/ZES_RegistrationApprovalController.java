@@ -30,12 +30,6 @@ public class ZES_RegistrationApprovalController
         return ZES_ApiResponse.ZES_ok(ZES_approvalService.ZES_pendingRegistrations(ZES_session));
     }
 
-    @GetMapping("/roles")
-    ZES_ApiResponse<?> ZES_roles(HttpSession ZES_session)
-    {
-        return ZES_ApiResponse.ZES_ok(ZES_approvalService.ZES_assignableRoles(ZES_session));
-    }
-
     @PostMapping("/{ZES_registrationId}/approve")
     ZES_ApiResponse<?> ZES_approve(
         @PathVariable("ZES_registrationId") long ZES_registrationId,

@@ -17,22 +17,19 @@ import com.prima.factory.dto.ZES_RegistrationApprovalRequest;
 public class ZES_RegistrationApprovalService
 {
     private final ZES_UserMapper ZES_users;
+    private final ZES_AdminAccessService ZES_adminAccess;
 
-    public ZES_RegistrationApprovalService(ZES_UserMapper ZES_users)
+    public ZES_RegistrationApprovalService(
+        ZES_UserMapper ZES_users, ZES_AdminAccessService ZES_adminAccess)
     {
         this.ZES_users = ZES_users;
+        this.ZES_adminAccess = ZES_adminAccess;
     }
 
     public List<Map<String, Object>> ZES_pendingRegistrations(HttpSession ZES_session)
     {
-        ZES_requireAdmin(ZES_session);
+        ZES_adminAccess.ZES_requireAdmin(ZES_session);
         return ZES_users.ZES_findPendingRegistrations();
-    }
-
-    public List<Map<String, Object>> ZES_assignableRoles(HttpSession ZES_session)
-    {
-        ZES_requireAdmin(ZES_session);
-        return ZES_users.ZES_findAssignableRoles();
     }
 
     @Transactional
@@ -41,7 +38,7 @@ public class ZES_RegistrationApprovalService
         ZES_RegistrationApprovalRequest ZES_request,
         HttpSession ZES_session)
     {
-        long ZES_reviewerId = ZES_requireAdmin(ZES_session);
+        long ZES_reviewerId = ZES_adminAccess.ZES_requireAdmin(ZES_session);
         Map<String, Object> ZES_registration = ZES_getPendingRegistration(ZES_registrationId);
         String ZES_username = String.valueOf(ZES_registration.get("username"));
         if (ZES_users.ZES_countUsers(ZES_username) > 0)
@@ -81,7 +78,7 @@ public class ZES_RegistrationApprovalService
     @Transactional
     public Map<String, Object> ZES_reject(long ZES_registrationId, HttpSession ZES_session)
     {
-        long ZES_reviewerId = ZES_requireAdmin(ZES_session);
+        long ZES_reviewerId = ZES_adminAccess.ZES_requireAdmin(ZES_session);
         ZES_getPendingRegistration(ZES_registrationId);
         if (ZES_users.ZES_updateRegistrationStatus(
             ZES_registrationId, "REJECTED", ZES_reviewerId) != 1)
@@ -106,16 +103,4 @@ public class ZES_RegistrationApprovalService
         return ZES_registration;
     }
 
-    private long ZES_requireAdmin(HttpSession ZES_session)
-    {
-        Object ZES_userId = ZES_session.getAttribute("USER_ID");
-        Object ZES_roles = ZES_session.getAttribute("USER_ROLES");
-        if (!(ZES_userId instanceof Number)
-            || !(ZES_roles instanceof List<?> ZES_roleList)
-            || !ZES_roleList.contains("ROLE_ADMIN"))
-        {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자 권한이 필요합니다.");
-        }
-        return ((Number) ZES_userId).longValue();
-    }
 }

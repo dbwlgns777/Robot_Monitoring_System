@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.csrf.CsrfToken;
 
 import com.prima.factory.dto.ZES_ApiResponse;
 import com.prima.factory.dto.ZES_LoginRequest;
@@ -49,5 +50,13 @@ public class ZES_AuthController
     ZES_ApiResponse<?> ZES_signup(@Valid @RequestBody ZES_SignupRequest ZES_request)
     {
         return ZES_ApiResponse.ZES_ok(ZES_authService.ZES_signup(ZES_request));
+    }
+
+    @GetMapping("/csrf")
+    ZES_ApiResponse<?> ZES_csrf(CsrfToken ZES_csrfToken)
+    {
+        return ZES_ApiResponse.ZES_ok(Map.of(
+            "token", ZES_csrfToken.getToken(),
+            "headerName", ZES_csrfToken.getHeaderName()));
     }
 }

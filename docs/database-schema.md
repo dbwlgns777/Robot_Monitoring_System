@@ -6,6 +6,8 @@
 password hash into `system_user`, creates the requested `user_role`, and records `reviewed_by`, `reviewed_at`,
 and `APPROVED` on the request in one transaction. Rejection records `REJECTED` without creating an account.
 `V3__repair_admin_role.sql` also restores the `admin` to `ROLE_ADMIN` link when an older database is missing it.
+Administrator role edits replace the target user's `user_role` row in a transaction. The currently logged-in
+administrator cannot change their own role, preventing accidental loss of the last active administration session.
 
 All tables use InnoDB/utf8mb4. Exact executable definitions, nullability, defaults, keys and indexes are maintained in [`V1__baseline_schema.sql`](../backend/src/main/resources/db/migration/V1__baseline_schema.sql); this document is the table-level catalogue.
 

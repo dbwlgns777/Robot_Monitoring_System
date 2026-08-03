@@ -95,6 +95,29 @@ public interface ZES_UserMapper
     @Select("SELECT role_code AS roleCode, role_name AS roleName FROM role ORDER BY id")
     List<Map<String, Object>> ZES_findAssignableRoles();
 
+    @Select("""
+        SELECT u.id,
+               u.username,
+               u.full_name AS fullName,
+               u.approval_status AS approvalStatus,
+               u.is_locked AS isLocked,
+               u.is_active AS isActive,
+               u.created_at AS createdAt,
+               (SELECT r.role_code FROM user_role ur JOIN role r ON r.id=ur.role_id
+                 WHERE ur.user_id=u.id ORDER BY r.id LIMIT 1) AS roleCode,
+               (SELECT r.role_name FROM user_role ur JOIN role r ON r.id=ur.role_id
+                 WHERE ur.user_id=u.id ORDER BY r.id LIMIT 1) AS roleName
+          FROM system_user u
+         ORDER BY u.created_at, u.id
+        """)
+    List<Map<String, Object>> ZES_findAllUsers();
+
+    @Select("SELECT COUNT(*) FROM system_user WHERE id=#{ZES_userId}")
+    int ZES_countUsersById(@Param("ZES_userId") long ZES_userId);
+
+    @org.apache.ibatis.annotations.Delete("DELETE FROM user_role WHERE user_id=#{ZES_userId}")
+    int ZES_deleteUserRoles(@Param("ZES_userId") long ZES_userId);
+
     @Insert("""
         INSERT INTO system_user(
             username, full_name, password_hash, approval_status, is_locked, is_active)

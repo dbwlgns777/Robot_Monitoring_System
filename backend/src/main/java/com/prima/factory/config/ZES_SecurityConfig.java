@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prima.factory.dto.ZES_ApiResponse;
@@ -27,7 +28,11 @@ public class ZES_SecurityConfig
     SecurityFilterChain ZES_chain(HttpSecurity ZES_http, ObjectMapper ZES_objectMapper) throws Exception
     {
         return ZES_http
-            .csrf(ZES_csrf -> ZES_csrf.ignoringRequestMatchers("/api/v1/auth/**", "/ws/**"))
+            .csrf(ZES_csrf -> ZES_csrf.ignoringRequestMatchers(
+                new AntPathRequestMatcher("/api/v1/auth/login", "POST"),
+                new AntPathRequestMatcher("/api/v1/auth/signup", "POST"),
+                new AntPathRequestMatcher("/api/v1/auth/logout", "POST"),
+                new AntPathRequestMatcher("/ws/**")))
             .authorizeHttpRequests(ZES_authorization -> ZES_authorization
                 .requestMatchers(
                     "/api/v1/auth/**", "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**", "/ws/**")
