@@ -5,8 +5,8 @@
 ## 모듈과 데이터 흐름
 
 - `frontend/` — 기존 10개 React 화면, REST snapshot, STOMP 갱신, 1초 REST fallback
-- `backend/` — Java 21 Spring Boot REST/session security/STOMP/MyBatis/Flyway (8080)
-- `device-server/` — 독립 Java 21 Simulator; 설비별 1초 telemetry/current-state/health 저장 (8081)
+- `backend/` — Java 17 Spring Boot REST/session security/STOMP/MyBatis/Flyway (8080)
+- `device-server/` — 독립 Java 17 Simulator; 설비별 1초 telemetry/current-state/health 저장 (8081)
 - `common-domain/` — Java 상태 enum과 우선순위 판정
 - `database/` — MySQL 8 전체 dump와 초기화 안내
 
@@ -20,7 +20,7 @@ MySQL → Backend REST snapshot + 1초 STOMP batch → React
 
 ## 개발 환경
 
-Java 21, Gradle 8.14+, Node.js 20+/npm 10+, Docker Compose 또는 MySQL Community 8.x가 필요합니다. 비밀값을 포함하지 않은 `.env.example`을 `.env`로 복사하고 개발용 비밀번호를 로컬에서 변경하십시오. Backend와 Device Server는 저장소 루트의 `.env`에서 `DB_USER`와 `DB_PASSWORD`를 읽으며, 실제 비밀번호는 Git에 커밋하지 않습니다.
+Temurin Java 17 이상, Gradle 8.14+, Node.js 20+/npm 10+, Docker Compose 또는 MySQL Community 8.x가 필요합니다. 비밀값을 포함하지 않은 `.env.example`을 `.env`로 복사하고 개발용 비밀번호를 로컬에서 변경하십시오. Backend와 Device Server는 저장소 루트의 `.env`에서 `DB_USER`와 `DB_PASSWORD`를 읽으며, 실제 비밀번호는 Git에 커밋하지 않습니다.
 
 ### Docker MySQL과 전체 동시 실행
 
@@ -57,7 +57,7 @@ IntelliJ에서 Gradle 프로젝트로 연 후 공유 설정 `Backend`, `Device S
 
 1. IntelliJ에서 `File > Open`을 선택하고 **저장소 루트 폴더**를 엽니다.
 2. 오른쪽 Gradle 도구창에서 `+ (Link Gradle Project)`를 누르고 루트 `settings.gradle.kts`를 선택합니다.
-3. `Settings > Build Tools > Gradle`에서 `Distribution`을 **Wrapper**, `Gradle JVM`을 **Java 21**로 설정합니다.
+3. `Settings > Build Tools > Gradle`에서 `Distribution`을 **Wrapper**, `Gradle JVM`을 **Temurin 17**로 설정합니다.
 4. Gradle 도구창에서 `Reload All Gradle Projects`를 누릅니다.
 5. 기존에 잘못 연결된 프로젝트가 있으면 Gradle 도구창에서 해당 항목만 `Unlink`한 뒤 루트 프로젝트를 다시 연결합니다.
 
@@ -73,18 +73,20 @@ Get-Item .\gradle\wrapper\gradle-wrapper.jar
 
 두 번째 명령은 JAR를 복원한 뒤 Gradle 8.14.4를 내려받습니다. 회사 방화벽이나 프록시가 다운로드를 차단하면 JAR는 생성되어도 Gradle 다운로드 오류가 별도로 표시될 수 있습니다.
 
-`gradlew.bat --version` 결과의 `Launcher JVM`과 `Daemon JVM`은 모두 Java 21이어야 합니다. Java 17로 표시되면 JDK 21을 설치한 뒤 현재 PowerShell의 `JAVA_HOME`을 변경하고 기존 Gradle daemon을 종료합니다.
+`gradlew.bat --version` 결과의 `Launcher JVM`과 `Daemon JVM`은 Java 17 이상이면 됩니다. 이 프로젝트는 별도의 JDK 21 Toolchain을 요구하지 않으며 모든 Java 모듈을 Java 17 bytecode로 컴파일합니다.
 
 ```powershell
-# 실제 설치된 JDK 21 폴더로 변경하세요.
-$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.x-hotspot"
+# 실제 설치된 Temurin 17 폴더로 변경하세요.
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot"
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
 .\gradlew.bat --stop
 java -version
 .\gradlew.bat --version
+.\gradlew.bat javaCompatibility
+.\gradlew.bat clean test bootJar
 ```
 
-IntelliJ에서도 `Settings > Build Tools > Gradle > Gradle JVM`을 같은 JDK 21로 지정한 뒤 Gradle 프로젝트를 다시 로드해야 합니다.
+IntelliJ에서도 `Settings > Build Tools > Gradle > Gradle JVM`을 같은 Temurin 17로 지정한 뒤 Gradle 프로젝트를 다시 로드해야 합니다. `javaCompatibility`는 `backend`, `common-domain`, `device-server` 모두 `source=17, target=17, release=17`을 출력합니다.
 
 ## 주소
 
