@@ -80,6 +80,11 @@ public interface ZES_UserMapper
                username,
                full_name AS fullName,
                password_hash AS passwordHash,
+               factory_id AS factoryId,
+               department,
+               position,
+               phone,
+               email,
                requested_role AS requestedRole,
                status
           FROM user_registration_request
@@ -92,7 +97,7 @@ public interface ZES_UserMapper
     @Select("SELECT id FROM role WHERE role_code = #{ZES_roleCode} LIMIT 1")
     Long ZES_findRoleIdByCode(@Param("ZES_roleCode") String ZES_roleCode);
 
-    @Select("SELECT role_code AS roleCode, role_name AS roleName FROM role ORDER BY id")
+    @Select("SELECT role_code AS roleCode, role_name AS roleName FROM role WHERE role_code IN ('ROLE_ADMIN','ROLE_USER') ORDER BY FIELD(role_code,'ROLE_USER','ROLE_ADMIN')")
     List<Map<String, Object>> ZES_findAssignableRoles();
 
     @Select("""
@@ -118,11 +123,30 @@ public interface ZES_UserMapper
     @org.apache.ibatis.annotations.Delete("DELETE FROM user_role WHERE user_id=#{ZES_userId}")
     int ZES_deleteUserRoles(@Param("ZES_userId") long ZES_userId);
 
+    @Select("""
+        SELECT u.id, u.username, u.full_name AS name, u.factory_id AS factoryId,
+               f.factory_name AS factoryName, u.department, u.position, u.phone, u.email
+          FROM system_user u
+          LEFT JOIN factory f ON f.id=u.factory_id
+         WHERE u.id=#{ZES_userId}
+        """)
+    Map<String, Object> ZES_findProfile(@Param("ZES_userId") long ZES_userId);
+
+    @Update("""
+        UPDATE system_user
+           SET full_name=#{ZES_name}, factory_id=#{ZES_factoryId}, department=#{ZES_department},
+               position=#{ZES_position}, phone=#{ZES_phone}, email=#{ZES_email}
+         WHERE id=#{ZES_userId}
+        """)
+    int ZES_updateProfile(Map<String, Object> ZES_profile);
+
     @Insert("""
         INSERT INTO system_user(
-            username, full_name, password_hash, approval_status, is_locked, is_active)
+            username, full_name, password_hash, factory_id, department, position, phone, email,
+            approval_status, is_locked, is_active)
         VALUES(
-            #{ZES_username}, #{ZES_fullName}, #{ZES_passwordHash}, 'APPROVED', 0, 1)
+            #{ZES_username}, #{ZES_fullName}, #{ZES_passwordHash}, #{ZES_factoryId},
+            #{ZES_department}, #{ZES_position}, #{ZES_phone}, #{ZES_email}, 'APPROVED', 0, 1)
         """)
     @Options(useGeneratedKeys = true, keyProperty = "ZES_userId")
     int ZES_insertApprovedUser(Map<String, Object> ZES_user);

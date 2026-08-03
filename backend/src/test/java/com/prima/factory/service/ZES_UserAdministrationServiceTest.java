@@ -21,17 +21,17 @@ class ZES_UserAdministrationServiceTest
     {
         ZES_UserMapper ZES_users = mock(ZES_UserMapper.class);
         when(ZES_users.ZES_countUsersById(20L)).thenReturn(1);
-        when(ZES_users.ZES_findRoleIdByCode("ROLE_MANAGER")).thenReturn(2L);
+        when(ZES_users.ZES_findRoleIdByCode("ROLE_USER")).thenReturn(5L);
         MockHttpSession ZES_session = new MockHttpSession();
         ZES_session.setAttribute("USER_ID", 1L);
         ZES_session.setAttribute("USER_ROLES", List.of("ROLE_ADMIN"));
 
         Map<String, Object> ZES_result = new ZES_UserAdministrationService(
             ZES_users, new ZES_AdminAccessService()).ZES_updateRole(
-                20L, new ZES_RegistrationApprovalRequest("ROLE_MANAGER"), ZES_session);
+                20L, new ZES_RegistrationApprovalRequest("ROLE_USER"), ZES_session);
 
-        assertEquals("ROLE_MANAGER", ZES_result.get("roleCode"));
+        assertEquals("ROLE_USER", ZES_result.get("roleCode"));
         verify(ZES_users).ZES_deleteUserRoles(20L);
-        verify(ZES_users).ZES_insertUserRole(20L, 2L);
+        verify(ZES_users).ZES_insertUserRole(20L, 5L);
     }
 }

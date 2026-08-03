@@ -5,3 +5,5 @@ export interface ProductionLine{id:string;name:string;product:string;status:Equi
 export interface RegistrationRequest{id:number;username:string;fullName:string;factoryName:string;department?:string;position?:string;phone?:string;email:string;requestedRole:string;status:'PENDING'|'APPROVED'|'REJECTED';createdAt:string;}
 export interface AssignableRole{roleCode:string;roleName:string;}
 export interface ManagedUser{id:number;username:string;fullName:string;approvalStatus:string;isLocked:boolean;isActive:boolean;createdAt:string;roleCode?:string;roleName?:string;}
+export interface UserProfile{id:number;username:string;name:string;factoryId?:number;factoryName?:string;department?:string;position?:string;phone?:string;email:string;}
+export interface FactoryOption{id:number;factoryName:string;}

@@ -56,6 +56,11 @@ public class ZES_RegistrationApprovalService
         ZES_user.put("ZES_username", ZES_username);
         ZES_user.put("ZES_fullName", ZES_registration.get("fullName"));
         ZES_user.put("ZES_passwordHash", ZES_registration.get("passwordHash"));
+        ZES_user.put("ZES_factoryId", ZES_registration.get("factoryId"));
+        ZES_user.put("ZES_department", ZES_registration.get("department"));
+        ZES_user.put("ZES_position", ZES_registration.get("position"));
+        ZES_user.put("ZES_phone", ZES_registration.get("phone"));
+        ZES_user.put("ZES_email", ZES_registration.get("email"));
         if (ZES_users.ZES_insertApprovedUser(ZES_user) != 1)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "사용자 계정을 생성하지 못했습니다.");
