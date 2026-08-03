@@ -275,3 +275,16 @@ code must match an active row in `factory`; duplicate active users and duplicate
 Backend Gradle 설정은 메인 클래스를 `com.prima.factory.ZES_PrimaFactoryBackendApplication`으로 명시합니다.
 따라서 이전 `PrimaFactoryBackendApplication.class`가 로컬 증분 빌드 폴더에 남아 있어도
 `resolveMainClassName`이 두 진입점을 발견하여 실패하지 않습니다.
+
+### 가입 신청 승인
+
+1. `admin` / `password`로 로그인합니다.
+2. 왼쪽 메뉴에서 **시스템 관리 → 가입 승인**을 선택합니다.
+3. 신청자 정보와 요청 권한을 확인한 뒤 **승인** 또는 **반려**를 선택합니다.
+
+이 기능을 추가하기 전에 로그인해 둔 세션에는 역할 정보가 없으므로 Backend 재시작 후 반드시
+로그아웃하고 `admin`으로 다시 로그인하십시오.
+
+승인은 하나의 DB 트랜잭션에서 `system_user` 계정 생성, `user_role` 권한 연결,
+`user_registration_request`의 `APPROVED` 상태 및 검토자 기록을 처리합니다. 반려 시에는 신청을
+`REJECTED`로 기록합니다. 화면과 `/api/v1/admin/**` API는 `ROLE_ADMIN` 사용자만 사용할 수 있습니다.

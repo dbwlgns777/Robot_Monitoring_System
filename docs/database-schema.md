@@ -1,5 +1,11 @@
 # Database schema
 
+## Registration approval lifecycle
+
+`user_registration_request` stores signup requests as `PENDING`. Administrator approval copies the BCrypt
+password hash into `system_user`, creates the requested `user_role`, and records `reviewed_by`, `reviewed_at`,
+and `APPROVED` on the request in one transaction. Rejection records `REJECTED` without creating an account.
+
 All tables use InnoDB/utf8mb4. Exact executable definitions, nullability, defaults, keys and indexes are maintained in [`V1__baseline_schema.sql`](../backend/src/main/resources/db/migration/V1__baseline_schema.sql); this document is the table-level catalogue.
 
 | Table | Key columns / types | Purpose |

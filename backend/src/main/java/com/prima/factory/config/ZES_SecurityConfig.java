@@ -32,6 +32,7 @@ public class ZES_SecurityConfig
                 .requestMatchers(
                     "/api/v1/auth/**", "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**", "/ws/**")
                 .permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .exceptionHandling(ZES_errors -> ZES_errors
                 .authenticationEntryPoint((ZES_request, ZES_response, ZES_exception) ->

@@ -47,8 +47,15 @@ public class ZES_AuthService
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인되지 않았거나 잠긴 계정입니다.");
         }
 
+        long ZES_userId = ((Number) ZES_user.get("id")).longValue();
+        List<String> ZES_roles = ZES_users.ZES_findRoleCodes(ZES_userId);
+        if (ZES_roles == null || ZES_roles.isEmpty())
+        {
+            ZES_roles = List.of("ROLE_USER");
+        }
+        var ZES_authorities = ZES_roles.stream().map(SimpleGrantedAuthority::new).toList();
         var ZES_authentication = UsernamePasswordAuthenticationToken.authenticated(
-            ZES_user.get("username"), null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+            ZES_user.get("username"), null, ZES_authorities);
         var ZES_securityContext = SecurityContextHolder.createEmptyContext();
         ZES_securityContext.setAuthentication(ZES_authentication);
         SecurityContextHolder.setContext(ZES_securityContext);
@@ -56,8 +63,10 @@ public class ZES_AuthService
             HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, ZES_securityContext);
         ZES_session.setAttribute("USER_ID", ZES_user.get("id"));
 
+        ZES_session.setAttribute("USER_ROLES", ZES_roles);
+
         return Map.of("id", ZES_user.get("id"), "username", ZES_user.get("username"),
-            "name", ZES_user.get("fullName"));
+            "name", ZES_user.get("fullName"), "roles", ZES_roles);
     }
 
     public void ZES_logout(HttpSession ZES_session)

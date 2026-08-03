@@ -13,9 +13,9 @@ INSERT IGNORE INTO collection_health(equipment_id,last_received_at,last_good_rec
 INSERT IGNORE INTO alarm_event(equipment_id,alarm_code,alarm_message,occurred_at,cleared_at,duration_seconds,severity,occurrence_count) VALUES(9,'E071','로봇 위치 불일치',CURRENT_TIMESTAMP(3)-INTERVAL 18 MINUTE,NULL,1080,'CRITICAL',4),(5,'W204','서보 부하율 상승',CURRENT_TIMESTAMP(3)-INTERVAL 50 MINUTE,CURRENT_TIMESTAMP(3)-INTERVAL 47 MINUTE,180,'WARNING',5),(8,'E114','소재 감지 지연',CURRENT_TIMESTAMP(3)-INTERVAL 2 HOUR,CURRENT_TIMESTAMP(3)-INTERVAL 109 MINUTE,660,'WARNING',3);
 INSERT IGNORE INTO downtime_event(equipment_id,started_at,duration_seconds,automatic_reason,corrected_reason,corrected_at,estimated_loss_quantity) VALUES(9,CURRENT_TIMESTAMP(3)-INTERVAL 18 MINUTE,1080,'ROBOT_FAULT','위치센서 브래킷 이탈',CURRENT_TIMESTAMP(3)-INTERVAL 5 MINUTE,75),(8,CURRENT_TIMESTAMP(3)-INTERVAL 2 HOUR,660,'MATERIAL_WAIT',NULL,NULL,45);
 INSERT IGNORE INTO maintenance_history(equipment_id,maintenance_type,scheduled_at,action_details,next_inspection_at) VALUES(5,'PREVENTIVE',CURRENT_TIMESTAMP(3)+INTERVAL 2 DAY,'서보축 윤활 및 정렬 점검',CURRENT_TIMESTAMP(3)+INTERVAL 2 DAY),(11,'PREVENTIVE',CURRENT_TIMESTAMP(3)+INTERVAL 5 DAY,'금형부 점검',CURRENT_TIMESTAMP(3)+INTERVAL 5 DAY);
-INSERT IGNORE INTO role(id,role_code,role_name) VALUES(1,'ROLE_EXECUTIVE','대표자'),(2,'ROLE_MANAGER','생산관리자'),(3,'ROLE_ADMIN','시스템 관리자');
+INSERT IGNORE INTO role(id,role_code,role_name) VALUES(1,'ROLE_EXECUTIVE','대표자'),(2,'ROLE_MANAGER','생산관리자'),(3,'ROLE_ADMIN','시스템 관리자'),(4,'ROLE_MAINTENANCE','설비·정비 담당자');
 INSERT IGNORE INTO permission(id,permission_code,permission_name) VALUES(1,'MONITOR_READ','모니터링 조회'),(2,'MASTER_WRITE','기준정보 관리');
-INSERT IGNORE INTO role_permission VALUES(1,1),(2,1),(2,2),(3,1),(3,2);
+INSERT IGNORE INTO role_permission VALUES(1,1),(2,1),(2,2),(3,1),(3,2),(4,1);
 -- Development only account: admin / password (BCrypt). Never seed this migration in production profile.
 INSERT INTO system_user(id,username,full_name,password_hash,approval_status,is_locked,is_active)
 VALUES(1,'admin','개발 관리자','$2a$10$wyzaUYXo4NJTynqgVHn.su/gmZAqPF08oHlEeypKegf3CVr4iTPva','APPROVED',0,1)

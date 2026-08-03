@@ -1,5 +1,14 @@
 # API contract
 
+## Administrator registration approval
+
+- `GET /api/v1/admin/registration-requests`: list pending signup requests.
+- `POST /api/v1/admin/registration-requests/{id}/approve`: create the approved user and role assignment.
+- `POST /api/v1/admin/registration-requests/{id}/reject`: reject the pending request.
+
+All three endpoints require an authenticated `ROLE_ADMIN` session and return the standard
+`{ success, data, message }` envelope.
+
 Base `/api/v1`; camelCase JSON; ISO-8601 timestamps; session cookie with `credentials: include`.
 
 All responses use `{ "success": true, "data": ..., "message": null }`; errors use `success:false` and an HTTP error status.

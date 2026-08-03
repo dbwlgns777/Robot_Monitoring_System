@@ -1,0 +1,13 @@
+import {useCallback,useEffect,useState} from 'react';
+import {Check,RefreshCw,ShieldCheck,UserCheck,X} from 'lucide-react';
+import {authApi} from '../api/authApi';
+import {Card,PageHeader} from '../components/Common';
+import type {RegistrationRequest} from '../types/domain';
+
+export function RegistrationApprovalPage(){
+ const [items,setItems]=useState<RegistrationRequest[]>([]),[loading,setLoading]=useState(true),[working,setWorking]=useState<number>(),[error,setError]=useState('');
+ const load=useCallback(async()=>{setLoading(true);setError('');try{setItems(await authApi.pendingRegistrations())}catch(e){setError(e instanceof Error?e.message:'가입 신청을 조회하지 못했습니다.')}finally{setLoading(false)}},[]);
+ useEffect(()=>{void load()},[load]);
+ async function decide(id:number,action:'approve'|'reject'){if(!window.confirm(action==='approve'?'이 가입 신청을 승인하시겠습니까?':'이 가입 신청을 반려하시겠습니까?'))return;setWorking(id);setError('');try{if(action==='approve')await authApi.approveRegistration(id);else await authApi.rejectRegistration(id);setItems(current=>current.filter(item=>item.id!==id))}catch(e){setError(e instanceof Error?e.message:'가입 신청을 처리하지 못했습니다.')}finally{setWorking(undefined)}}
+ return <><PageHeader title="가입 승인 관리" description="시스템 관리자가 가입 신청 정보와 요청 권한을 확인한 후 계정을 생성합니다." actions={<button className="secondary-btn" onClick={()=>void load()}><RefreshCw/> 새로고침</button>}/><div className="safety-bar"><ShieldCheck/><b>관리자 전용</b><span>승인 시 사용자 계정과 역할이 생성되며 신청 비밀번호 해시가 안전하게 이전됩니다.</span></div>{error&&<div className="form-error">{error}</div>}<Card><div className="approval-summary"><UserCheck/><div><b>승인 대기 {items.length}건</b><span>admin 계정의 시스템 관리자 권한으로만 처리할 수 있습니다.</span></div></div>{loading?<div className="state-box"><span className="spinner"/>가입 신청을 불러오는 중입니다.</div>:items.length===0?<div className="approval-empty"><Check/><b>처리할 가입 신청이 없습니다.</b><span>새로운 가입 승인 요청이 접수되면 이 화면에 표시됩니다.</span></div>:<div className="responsive-table"><table><thead><tr><th>신청자</th><th>소속</th><th>연락처</th><th>요청 권한</th><th>신청 일시</th><th>처리</th></tr></thead><tbody>{items.map(item=><tr key={item.id}><td><b>{item.fullName}</b><small>{item.username} · {item.email}</small></td><td>{item.factoryName}<small>{item.department||'-'} · {item.position||'-'}</small></td><td>{item.phone||'-'}</td><td><span className="role-chip">{item.requestedRole}</span></td><td>{new Date(item.createdAt).toLocaleString('ko-KR')}</td><td><div className="approval-actions"><button className="approve-btn" disabled={working===item.id} onClick={()=>void decide(item.id,'approve')}><Check/>승인</button><button className="reject-btn" disabled={working===item.id} onClick={()=>void decide(item.id,'reject')}><X/>반려</button></div></td></tr>)}</tbody></table></div>}</Card></>
+}
