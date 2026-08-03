@@ -1,0 +1,1 @@
+import {monitoringProvider} from '../services/provider';export const monitoringApi={getDashboard:()=>monitoringProvider.getDashboard(),getEquipment:()=>monitoringProvider.getEquipment(),getProducts:()=>monitoringProvider.getProducts(),getCollectionHealth:()=>monitoringProvider.getCollectionHealth()};

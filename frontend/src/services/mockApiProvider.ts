@@ -1,0 +1,2 @@
+import {alarms,collection,equipment,hourly,kpi,lines,products,systemHealth} from '../data/mockData';import type {MonitoringProvider} from './apiProvider';
+const clone=<T>(v:T)=>Promise.resolve(structuredClone(v));export const mockApiProvider:MonitoringProvider={getDashboard:()=>clone({kpi,lines,hourly,alarms}),getEquipment:()=>clone(equipment),getProducts:()=>clone(products),getCollectionHealth:()=>clone({collection,systemHealth})};
