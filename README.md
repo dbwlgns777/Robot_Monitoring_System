@@ -136,6 +136,18 @@ git stash show -p "stash@{0}"
 
 pull된 `backend/build.gradle.kts`에 필요한 `junit-platform-launcher` 변경이 이미 있으면 stash를 다시 적용하지 않습니다. 확인 후 중복된 로컬 변경일 때만 `git stash drop "stash@{0}"`으로 제거합니다.
 
+IntelliJ가 `.run/Backend.run.xml`을 로컬에서 수정해 pull이 중단된 경우에도 해당 파일만 보관합니다. 원격 최신 설정은 `:backend:bootRun`을 사용하므로 기존 Application 설정을 pull 후 다시 적용하지 않습니다.
+
+```powershell
+git diff -- .\.run\Backend.run.xml
+git stash push -m "local IntelliJ Backend run setting before pull" -- .\.run\Backend.run.xml
+git pull
+Select-String -Path .\.run\Backend.run.xml -Pattern ":backend:bootRun|GradleRunConfiguration"
+git stash show -p "stash@{0}"
+```
+
+검색 결과에 `:backend:bootRun`과 `GradleRunConfiguration`이 있으면 새 공유 설정이 적용된 것입니다. 로컬 stash가 이전 `SpringBootApplicationConfigurationType` 또는 classpath 없는 Application 설정뿐이라면 확인 후 `git stash drop "stash@{0}"`으로 제거합니다.
+
 ## 주소
 
 | Service | URL |
