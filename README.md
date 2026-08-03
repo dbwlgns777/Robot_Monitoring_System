@@ -271,3 +271,7 @@ code must match an active row in `factory`; duplicate active users and duplicate
 ```
 
 이 명령은 소스나 데이터베이스를 삭제하지 않고 `backend/build`의 컴파일 산출물만 다시 생성합니다.
+
+Backend Gradle 설정은 메인 클래스를 `com.prima.factory.ZES_PrimaFactoryBackendApplication`으로 명시합니다.
+따라서 이전 `PrimaFactoryBackendApplication.class`가 로컬 증분 빌드 폴더에 남아 있어도
+`resolveMainClassName`이 두 진입점을 발견하여 실패하지 않습니다.
