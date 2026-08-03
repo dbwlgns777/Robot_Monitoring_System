@@ -152,3 +152,14 @@ git diff --check
 ```
 
 DB 상세는 `docs/database-schema.md`, API와 STOMP 주소는 `docs/api-contract.md`, 안전 불변조건은 `docs/read-only-safety.md`를 참조하십시오.
+
+### Backend 컴파일 실패 진단
+
+`Task :backend:compileJava FAILED`와 `BUILD FAILED`만으로는 실제 Java 컴파일 원인을 알 수 없습니다. 그보다 앞에 출력된 `파일경로:줄번호: error:` 메시지가 필요합니다. Windows PowerShell에서는 다음 스크립트로 캐시를 사용하지 않고 Backend를 다시 컴파일하고 전체 로그를 `backend-compile.log`에 저장합니다.
+
+```powershell
+.\scripts\diagnose-backend-build.ps1
+Select-String -Path .\backend-compile.log -Pattern "error:|What went wrong" -Context 2,3
+```
+
+진단 로그는 로컬 생성 파일이며 Git에 커밋하지 마십시오. 문제를 보고할 때는 비밀번호나 환경변수 값이 아니라 첫 번째 `error:`의 파일 경로, 줄 번호, 오류 문장과 바로 위아래 코드만 제공하십시오.

@@ -9,3 +9,4 @@ build/
 **/build/
 # Generated from the tracked text payload by gradlew/gradlew.bat.
 gradle/wrapper/gradle-wrapper.jar
+backend-compile.log
