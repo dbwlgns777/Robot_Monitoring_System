@@ -1,0 +1,1 @@
+package com.prima.factory.device.simulator; import java.util.Random; public final class SeededRandomSource implements RandomSource {private final Random random;public SeededRandomSource(long seed){random=new Random(seed);}public synchronized double nextDouble(){return random.nextDouble();}public synchronized int nextInt(int bound){return random.nextInt(bound);}}
