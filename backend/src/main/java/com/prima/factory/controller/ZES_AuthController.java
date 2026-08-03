@@ -40,19 +40,20 @@ public class ZES_AuthController
         HttpServletResponse ZES_response)
     {
         Object ZES_user = ZES_authService.ZES_login(ZES_request, ZES_session);
+        Duration ZES_sessionDuration = ZES_request.ZES_rememberMe()
+            ? Duration.ofDays(30) : Duration.ofMinutes(30);
+        ZES_session.setMaxInactiveInterval(Math.toIntExact(ZES_sessionDuration.getSeconds()));
+        ResponseCookie.ResponseCookieBuilder ZES_cookieBuilder = ResponseCookie
+            .from("JSESSIONID", ZES_session.getId())
+            .httpOnly(true)
+            .secure(ZES_httpRequest.isSecure())
+            .sameSite("Lax")
+            .path("/");
         if (ZES_request.ZES_rememberMe())
         {
-            int ZES_rememberSeconds = Math.toIntExact(Duration.ofDays(30).getSeconds());
-            ZES_session.setMaxInactiveInterval(ZES_rememberSeconds);
-            ResponseCookie ZES_cookie = ResponseCookie.from("JSESSIONID", ZES_session.getId())
-                .httpOnly(true)
-                .secure(ZES_httpRequest.isSecure())
-                .sameSite("Lax")
-                .path("/")
-                .maxAge(Duration.ofDays(30))
-                .build();
-            ZES_response.addHeader(HttpHeaders.SET_COOKIE, ZES_cookie.toString());
+            ZES_cookieBuilder.maxAge(ZES_sessionDuration);
         }
+        ZES_response.setHeader(HttpHeaders.SET_COOKIE, ZES_cookieBuilder.build().toString());
         return ZES_ApiResponse.ZES_ok(ZES_user);
     }
 

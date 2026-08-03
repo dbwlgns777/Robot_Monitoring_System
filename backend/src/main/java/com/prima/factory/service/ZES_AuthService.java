@@ -82,7 +82,22 @@ public class ZES_AuthService
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
-        return Map.of("id", ZES_userId);
+        long ZES_id = ((Number) ZES_userId).longValue();
+        Map<String, Object> ZES_user = ZES_users.ZES_findById(ZES_id);
+        if (ZES_user == null
+            || !"APPROVED".equals(ZES_user.get("approvalStatus"))
+            || Boolean.TRUE.equals(ZES_user.get("isLocked"))
+            || Boolean.FALSE.equals(ZES_user.get("isActive")))
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 세션이 유효하지 않습니다.");
+        }
+        List<String> ZES_roles = ZES_users.ZES_findRoleCodes(ZES_id);
+        if (ZES_roles == null || ZES_roles.isEmpty())
+        {
+            ZES_roles = List.of("ROLE_USER");
+        }
+        return Map.of("id", ZES_id, "username", ZES_user.get("username"),
+            "name", ZES_user.get("fullName"), "roles", ZES_roles);
     }
 
     @Transactional

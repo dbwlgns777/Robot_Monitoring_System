@@ -38,6 +38,14 @@ public interface ZES_UserMapper
         """)
     Long ZES_findFactoryId(@Param("ZES_factory") String ZES_factory);
 
+    @Select("""
+        SELECT id, username, full_name AS fullName, approval_status AS approvalStatus,
+               is_locked AS isLocked, is_active AS isActive
+          FROM system_user
+         WHERE id = #{ZES_userId}
+        """)
+    Map<String, Object> ZES_findById(@Param("ZES_userId") long ZES_userId);
+
     @Select("SELECT COUNT(*) FROM system_user WHERE username = #{ZES_username}")
     int ZES_countUsers(@Param("ZES_username") String ZES_username);
 

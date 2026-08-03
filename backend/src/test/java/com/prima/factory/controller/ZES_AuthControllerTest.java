@@ -46,15 +46,36 @@ class ZES_AuthControllerTest
             "isLocked", false, "isActive", true));
 
         var ZES_session = new MockHttpSession();
+        var ZES_httpResponse = new MockHttpServletResponse();
         var ZES_response = new ZES_AuthController(new ZES_AuthService(ZES_users, ZES_encoder))
-            .ZES_login(new ZES_LoginRequest("admin", "password", false), ZES_session,
-                new MockHttpServletRequest(), new MockHttpServletResponse());
+            .ZES_login(new ZES_LoginRequest("admin", "password", true), ZES_session,
+                new MockHttpServletRequest(), ZES_httpResponse);
 
         assertTrue(ZES_response.ZES_success());
+        assertTrue(ZES_httpResponse.getHeader("Set-Cookie").contains("Max-Age=2592000"));
         assertEquals(1L, ZES_session.getAttribute("USER_ID"));
         var ZES_context = (SecurityContext) ZES_session.getAttribute(
             HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
         assertEquals("admin", ZES_context.getAuthentication().getPrincipal());
+    }
+
+    @Test
+    void ZES_existingSessionRestoresCompleteUser()
+    {
+        ZES_UserMapper ZES_users = mock(ZES_UserMapper.class);
+        when(ZES_users.ZES_findById(1L)).thenReturn(Map.of(
+            "id", 1L, "username", "admin", "fullName", "개발 관리자",
+            "approvalStatus", "APPROVED", "isLocked", false, "isActive", true));
+        when(ZES_users.ZES_findRoleCodes(1L)).thenReturn(java.util.List.of("ROLE_ADMIN"));
+        MockHttpSession ZES_session = new MockHttpSession();
+        ZES_session.setAttribute("USER_ID", 1L);
+
+        Map<String, Object> ZES_user = new ZES_AuthService(
+            ZES_users, new BCryptPasswordEncoder()).ZES_currentUser(ZES_session);
+
+        assertEquals("admin", ZES_user.get("username"));
+        assertEquals("개발 관리자", ZES_user.get("name"));
+        assertEquals(java.util.List.of("ROLE_ADMIN"), ZES_user.get("roles"));
     }
 
     @Test

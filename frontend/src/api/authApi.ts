@@ -7,6 +7,7 @@ export const authApi={
  login:(username:string,password:string,rememberMe:boolean)=>request<AuthenticatedUser>('/auth/login',{method:'POST',body:JSON.stringify({username,password,rememberMe})}),
  register:(form:RegistrationForm)=>request<{status:'PENDING'}>('/auth/signup',{method:'POST',body:JSON.stringify(form)}),
  logout:()=>request('/auth/logout',{method:'POST'}),
+ me:()=>request<AuthenticatedUser>('/auth/me'),
  pendingRegistrations:()=>request<RegistrationRequest[]>('/admin/registration-requests'),
  assignableRoles:()=>request<AssignableRole[]>('/admin/users/roles'),
  users:()=>request<ManagedUser[]>('/admin/users'),
