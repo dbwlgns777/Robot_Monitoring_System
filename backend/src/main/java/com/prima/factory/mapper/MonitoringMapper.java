@@ -1,7 +1,40 @@
 package com.prima.factory.mapper;
 import java.util.*; import org.apache.ibatis.annotations.*;
 @Mapper public interface MonitoringMapper {
- @Select("""SELECT e.id,e.equipment_code code,e.equipment_name name,e.line_id lineId,e.equipment_type type,s.display_status status,s.operating_status operatingStatus,s.communication_status communicationStatus,s.status_started_at statusStartedAt,p.product_name product,COALESCE(pp.target_quantity,0) target,s.production_count actual,s.cycle_time cycleTime,s.current_alarm alarm,s.collected_at lastReceived,s.response_ms responseMs,e.is_active enabled,e.manufacturer,e.model,c.ip_address ip,c.protocol FROM equipment e JOIN equipment_current_state s ON s.equipment_id=e.id LEFT JOIN equipment_connection c ON c.equipment_id=e.id LEFT JOIN production_plan pp ON pp.line_id=e.line_id AND pp.production_date=CURRENT_DATE AND pp.status='IN_PROGRESS' LEFT JOIN product p ON p.id=pp.product_id WHERE e.is_active=1 ORDER BY e.line_id,e.process_order""") List<Map<String,Object>> currentEquipment();
+ @Select("""
+     SELECT e.id,
+            e.equipment_code code,
+            e.equipment_name name,
+            e.line_id lineId,
+            e.equipment_type type,
+            s.display_status status,
+            s.operating_status operatingStatus,
+            s.communication_status communicationStatus,
+            s.status_started_at statusStartedAt,
+            p.product_name product,
+            COALESCE(pp.target_quantity, 0) target,
+            s.production_count actual,
+            s.cycle_time cycleTime,
+            s.current_alarm alarm,
+            s.collected_at lastReceived,
+            s.response_ms responseMs,
+            e.is_active enabled,
+            e.manufacturer,
+            e.model,
+            c.ip_address ip,
+            c.protocol
+       FROM equipment e
+       JOIN equipment_current_state s ON s.equipment_id = e.id
+       LEFT JOIN equipment_connection c ON c.equipment_id = e.id
+       LEFT JOIN production_plan pp
+         ON pp.line_id = e.line_id
+        AND pp.production_date = CURRENT_DATE
+        AND pp.status = 'IN_PROGRESS'
+       LEFT JOIN product p ON p.id = pp.product_id
+      WHERE e.is_active = 1
+      ORDER BY e.line_id, e.process_order
+     """)
+ List<Map<String,Object>> currentEquipment();
  @Select("SELECT * FROM collection_health ORDER BY equipment_id") List<Map<String,Object>> collectionHealth();
  @Select("SELECT * FROM product WHERE is_active=1 ORDER BY product_code") List<Map<String,Object>> products();
  @Select("SELECT * FROM production_line WHERE is_active=1 ORDER BY display_order") List<Map<String,Object>> lines();

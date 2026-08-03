@@ -1,6 +1,7 @@
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $logFile = Join-Path $repositoryRoot "backend-compile.log"
+$buildExitCode = 1
 
 Push-Location $repositoryRoot
 try {
