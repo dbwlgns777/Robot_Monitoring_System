@@ -88,6 +88,18 @@ java -version
 
 IntelliJ에서도 `Settings > Build Tools > Gradle > Gradle JVM`을 같은 Temurin 17로 지정한 뒤 Gradle 프로젝트를 다시 로드해야 합니다. `javaCompatibility`는 `backend`, `common-domain`, `device-server` 모두 `source=17, target=17, release=17`을 출력합니다.
 
+### `javaCompatibility` 작업을 찾지 못하는 경우
+
+`Task 'javaCompatibility' not found`는 Java 또는 Gradle 버전 문제가 아니라, 현재 PowerShell에서 실행 중인 checkout의 루트 `build.gradle.kts`가 아직 Java 17 변경 전 버전이라는 뜻입니다. PR이 병합되기 전에는 기본 브랜치에서 `git pull`만 실행해도 PR 커밋이 내려오지 않습니다. PR을 먼저 병합하거나 Java 17 변경이 포함된 PR 브랜치를 checkout한 뒤 아래처럼 확인하십시오.
+
+```powershell
+git status --short --branch
+git log -1 --oneline
+Select-String -Path .\build.gradle.kts -Pattern "javaCompatibility|VERSION_17|JavaLanguageVersion"
+```
+
+정상 checkout에서는 최신 커밋에 `2b02d1a` 이후 변경이 포함되고, 검색 결과에 `javaCompatibility`와 `VERSION_17`이 표시되며 `JavaLanguageVersion.of(21)`은 표시되지 않습니다. IntelliJ에서 연 프로젝트와 PowerShell 경로가 같은지도 확인하십시오.
+
 ## 주소
 
 | Service | URL |
