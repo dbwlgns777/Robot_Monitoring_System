@@ -100,7 +100,7 @@ Select-String -Path .\build.gradle.kts -Pattern "javaCompatibility|VERSION_17|Ja
 
 정상 checkout에서는 최신 커밋에 `2b02d1a` 이후 변경이 포함되고, 검색 결과에 `javaCompatibility`와 `VERSION_17`이 표시되며 `JavaLanguageVersion.of(21)`은 표시되지 않습니다. IntelliJ에서 연 프로젝트와 PowerShell 경로가 같은지도 확인하십시오.
 
-### `git pull`이 로컬 `build.gradle.kts` 변경 때문에 중단되는 경우
+### `git pull`이 로컬 Gradle 파일 변경 때문에 중단되는 경우
 
 로컬 변경을 삭제하지 말고 먼저 임시 보관한 후 pull합니다. 아래 명령은 `build.gradle.kts`만 stash하므로 다른 작업 파일에는 영향을 주지 않습니다.
 
@@ -114,6 +114,17 @@ git stash show -p "stash@{0}"
 ```
 
 pull된 파일에 이미 `VERSION_17`과 `javaCompatibility`가 있으면 로컬 stash는 같은 목적의 이전 수정일 가능성이 큽니다. `git stash show -p`로 내용을 확인한 뒤 불필요한 경우에만 `git stash drop "stash@{0}"`으로 제거하십시오. 로컬 변경에 별도의 필요한 내용이 있으면 `git stash pop`을 무조건 실행하지 말고 해당 부분만 새 파일에 수동 반영해 충돌을 피하십시오.
+
+오류에 `backend/build.gradle.kts`처럼 다른 파일이 표시되면 해당 경로만 같은 방식으로 보관합니다. 아래 절차는 Backend Gradle 파일 외의 사용자 변경을 건드리지 않습니다.
+
+```powershell
+git diff -- .\backend\build.gradle.kts
+git stash push -m "local backend Gradle setting before pull" -- .\backend\build.gradle.kts
+git pull
+git stash show -p "stash@{0}"
+```
+
+pull된 `backend/build.gradle.kts`에 필요한 `junit-platform-launcher` 변경이 이미 있으면 stash를 다시 적용하지 않습니다. 확인 후 중복된 로컬 변경일 때만 `git stash drop "stash@{0}"`으로 제거합니다.
 
 ## 주소
 
