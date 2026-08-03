@@ -3,6 +3,7 @@ dist/
 *.tsbuildinfo
 .env
 .DS_Store
+.idea/
 .dev-run/
 .gradle/
 build/
