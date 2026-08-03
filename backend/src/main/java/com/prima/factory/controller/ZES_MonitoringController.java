@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prima.factory.dto.ApiResponse;
+import com.prima.factory.dto.ZES_ApiResponse;
 import com.prima.factory.service.ZES_MonitoringService;
 
 @RestController
@@ -26,102 +26,121 @@ public class ZES_MonitoringController
         this.ZES_monitoringService = ZES_monitoringService;
     }
 
-    @GetMapping("/factories") ApiResponse<?> ZES_factories()
+    @GetMapping("/factories")
+    ZES_ApiResponse<?> ZES_factories()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_factories());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_factories());
     }
 
-    @GetMapping("/lines") ApiResponse<?> ZES_lines()
+    @GetMapping("/lines")
+    ZES_ApiResponse<?> ZES_lines()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_lines());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_lines());
     }
 
-    @GetMapping("/dashboard/summary") ApiResponse<?> ZES_dashboard()
+    @GetMapping("/dashboard/summary")
+    ZES_ApiResponse<?> ZES_dashboard()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_dashboard());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_dashboard());
     }
 
-    @GetMapping({"/realtime/equipment", "/equipment"}) ApiResponse<?> ZES_equipment()
+    @GetMapping({"/realtime/equipment", "/equipment"})
+    ZES_ApiResponse<?> ZES_equipment()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_equipment());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_equipment());
     }
 
-    @GetMapping("/realtime/equipment/{ZES_id}") ApiResponse<?> ZES_equipment(@PathVariable("ZES_id") long ZES_id)
+    @GetMapping("/realtime/equipment/{ZES_id}")
+    ZES_ApiResponse<?> ZES_equipment(@PathVariable("ZES_id") long ZES_id)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_equipment(ZES_id));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_equipment(ZES_id));
     }
 
-    @GetMapping("/realtime/equipment/{ZES_id}/trend") ApiResponse<?> ZES_trend(@PathVariable("ZES_id") long ZES_id)
+    @GetMapping("/realtime/equipment/{ZES_id}/trend")
+    ZES_ApiResponse<?> ZES_trend(@PathVariable("ZES_id") long ZES_id)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_trend(ZES_id));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_trend(ZES_id));
     }
 
-    @PostMapping("/equipment") ApiResponse<?> ZES_createEquipment(@RequestBody Map<String, Object> ZES_body)
+    @PostMapping("/equipment")
+    ZES_ApiResponse<?> ZES_createEquipment(@RequestBody Map<String, Object> ZES_body)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_createEquipment(ZES_body));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_createEquipment(ZES_body));
     }
 
-    @PutMapping("/equipment/{ZES_id}") ApiResponse<?> ZES_updateEquipment(
+    @PutMapping("/equipment/{ZES_id}")
+    ZES_ApiResponse<?> ZES_updateEquipment(
         @PathVariable("ZES_id") long ZES_id, @RequestBody Map<String, Object> ZES_body)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_updateEquipment(ZES_id, ZES_body));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_updateEquipment(ZES_id, ZES_body));
     }
 
-    @PatchMapping("/equipment/{ZES_id}/deactivate") ApiResponse<?> ZES_deactivateEquipment(
+    @PatchMapping("/equipment/{ZES_id}/deactivate")
+    ZES_ApiResponse<?> ZES_deactivateEquipment(
         @PathVariable("ZES_id") long ZES_id)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_deactivateEquipment(ZES_id));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_deactivateEquipment(ZES_id));
     }
 
-    @GetMapping("/products") ApiResponse<?> ZES_products()
+    @GetMapping("/products")
+    ZES_ApiResponse<?> ZES_products()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_products());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_products());
     }
 
-    @PostMapping("/products") ApiResponse<?> ZES_createProduct(@RequestBody Map<String, Object> ZES_body)
+    @PostMapping("/products")
+    ZES_ApiResponse<?> ZES_createProduct(@RequestBody Map<String, Object> ZES_body)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_createProduct(ZES_body));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_createProduct(ZES_body));
     }
 
-    @PutMapping("/products/{ZES_id}") ApiResponse<?> ZES_updateProduct(
+    @PutMapping("/products/{ZES_id}")
+    ZES_ApiResponse<?> ZES_updateProduct(
         @PathVariable("ZES_id") long ZES_id, @RequestBody Map<String, Object> ZES_body)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_updateProduct(ZES_id, ZES_body));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_updateProduct(ZES_id, ZES_body));
     }
 
-    @PatchMapping("/products/{ZES_id}/deactivate") ApiResponse<?> ZES_deactivateProduct(
+    @PatchMapping("/products/{ZES_id}/deactivate")
+    ZES_ApiResponse<?> ZES_deactivateProduct(
         @PathVariable("ZES_id") long ZES_id)
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_deactivateProduct(ZES_id));
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_deactivateProduct(ZES_id));
     }
 
-    @GetMapping("/analytics/production") ApiResponse<?> ZES_production()
+    @GetMapping("/analytics/production")
+    ZES_ApiResponse<?> ZES_production()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_productionAnalytics());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_productionAnalytics());
     }
 
-    @GetMapping({"/analytics/downtime", "/analytics/bottleneck"}) ApiResponse<?> ZES_downtime()
+    @GetMapping({"/analytics/downtime", "/analytics/bottleneck"})
+    ZES_ApiResponse<?> ZES_downtime()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_downtimeAnalytics());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_downtimeAnalytics());
     }
 
-    @GetMapping("/analytics/alarms") ApiResponse<?> ZES_alarms()
+    @GetMapping("/analytics/alarms")
+    ZES_ApiResponse<?> ZES_alarms()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_alarms());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_alarms());
     }
 
-    @GetMapping("/maintenance") ApiResponse<?> ZES_maintenance()
+    @GetMapping("/maintenance")
+    ZES_ApiResponse<?> ZES_maintenance()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_maintenance());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_maintenance());
     }
 
-    @GetMapping("/system/collection-health") ApiResponse<?> ZES_collection()
+    @GetMapping("/system/collection-health")
+    ZES_ApiResponse<?> ZES_collection()
     {
-        return ApiResponse.ok(ZES_monitoringService.ZES_collection());
+        return ZES_ApiResponse.ZES_ok(ZES_monitoringService.ZES_collection());
     }
 
-    @GetMapping("/system/health-summary") ApiResponse<?> ZES_health()
+    @GetMapping("/system/health-summary")
+    ZES_ApiResponse<?> ZES_health()
     {
-        return ApiResponse.ok(Map.of("services", List.of("BACKEND", "DEVICE_SERVER", "MYSQL")));
+        return ZES_ApiResponse.ZES_ok(Map.of("services", List.of("BACKEND", "DEVICE_SERVER", "MYSQL")));
     }
 }

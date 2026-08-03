@@ -5,3 +5,21 @@ dependencies {
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     workingDir(rootProject.projectDir)
 }
+
+// Source class renames can leave obsolete .class files in IDE/Gradle incremental output.
+// Remove only the superseded component classes after compilation and before bootRun.
+val ZES_removeLegacyBackendClasses by tasks.registering(Delete::class) {
+    delete(
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/controller/AuthController.class"),
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/controller/MonitoringController.class"),
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/scheduler/RealtimePublisher.class"),
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/config/SecurityConfig.class"),
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/config/WebSocketConfig.class"),
+        layout.buildDirectory.file("classes/java/main/com/prima/factory/exception/GlobalExceptionHandler.class")
+    )
+    mustRunAfter(tasks.named("classes"))
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    dependsOn(ZES_removeLegacyBackendClasses)
+}

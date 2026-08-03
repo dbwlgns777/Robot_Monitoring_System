@@ -67,7 +67,7 @@ mysql -h localhost -P 3306 -u root -p -e "SELECT USER(), CURRENT_USER(), VERSION
 
 `.env`에는 실제 비밀번호를 Git에 커밋하지 않고 `DB_USER`, `DB_PASSWORD`, `DB_URL`만 로컬로 설정합니다. Docker MySQL 볼륨이 이미 생성된 뒤 `MYSQL_ROOT_PASSWORD`만 변경해도 기존 root 비밀번호는 자동 변경되지 않으므로, 기존 볼륨의 실제 비밀번호를 사용하거나 MySQL에서 안전하게 계정 비밀번호를 변경해야 합니다.
 
-직접 만든 Application 구성에서 실행 명령에 `-classpath`가 없고 `ClassNotFoundException: com.prima.factory.PrimaFactoryBackendApplication`이 발생하면 해당 구성이 `backend.main` 모듈 classpath를 사용하지 않는 것입니다. 그 구성을 사용하지 말고 공유 `Backend` Gradle 구성을 선택하십시오. IntelliJ Community Edition에서도 Gradle Run Configuration은 사용할 수 있습니다.
+직접 만든 Application 구성에서 실행 명령에 `-classpath`가 없고 `ClassNotFoundException: com.prima.factory.ZES_PrimaFactoryBackendApplication`이 발생하면 해당 구성이 `backend.main` 모듈 classpath를 사용하지 않는 것입니다. 그 구성을 사용하지 말고 공유 `Backend` Gradle 구성을 선택하십시오. IntelliJ Community Edition에서도 Gradle Run Configuration은 사용할 수 있습니다.
 
 ### IntelliJ에서 “관련 Gradle 프로젝트가 연결되어 있지 않음”이 표시될 때
 
@@ -199,7 +199,7 @@ mysql -u root -p < database/dump/prima_factory_360_full.sql
 .\scripts\cleanup-legacy-root-frontend.ps1
 ```
 
-로그인 성공 후 보호 API가 403을 반환하면 서버 세션에 Spring Security 인증정보가 저장되지 않은 구버전 Backend일 수 있습니다. 최신 로그인 API는 `SPRING_SECURITY_CONTEXT`와 `USER_ID`를 같은 HTTP session에 저장하며, 인증 만료·권한 오류도 JSON `ApiResponse` 형식으로 반환합니다.
+로그인 성공 후 보호 API가 403을 반환하면 서버 세션에 Spring Security 인증정보가 저장되지 않은 구버전 Backend일 수 있습니다. 최신 로그인 API는 `SPRING_SECURITY_CONTEXT`와 `USER_ID`를 같은 HTTP session에 저장하며, 인증 만료·권한 오류도 JSON `ZES_ApiResponse` 형식으로 반환합니다.
 
 ## 검증
 
@@ -257,3 +257,17 @@ entry points and overridden framework method names (for example Java `main`) kee
 
 Signup writes a `PENDING` row to `user_registration_request` in one transaction. The submitted factory name or
 code must match an active row in `factory`; duplicate active users and duplicate pending requests are rejected.
+
+
+### Backend class rename 후 중복 endpoint 오류
+
+`AuthController`에서 `ZES_AuthController`로 이름을 변경한 뒤 기존 `AuthController.class`가
+`backend/build/classes`에 남아 있으면 Spring이 두 컨트롤러를 함께 검색하여 `Ambiguous mapping`으로
+시작에 실패합니다. 최신 `:backend:bootRun` 작업은 컴파일 후 구형 컴포넌트 class를 자동 삭제합니다.
+이미 실행 중인 IntelliJ/Gradle 프로세스가 있으면 중지한 다음 최초 한 번은 다음과 같이 실행하십시오.
+
+```powershell
+.\gradlew.bat :backend:clean :backend:bootRun
+```
+
+이 명령은 소스나 데이터베이스를 삭제하지 않고 `backend/build`의 컴파일 산출물만 다시 생성합니다.
