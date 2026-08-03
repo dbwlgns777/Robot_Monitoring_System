@@ -100,6 +100,21 @@ Select-String -Path .\build.gradle.kts -Pattern "javaCompatibility|VERSION_17|Ja
 
 정상 checkout에서는 최신 커밋에 `2b02d1a` 이후 변경이 포함되고, 검색 결과에 `javaCompatibility`와 `VERSION_17`이 표시되며 `JavaLanguageVersion.of(21)`은 표시되지 않습니다. IntelliJ에서 연 프로젝트와 PowerShell 경로가 같은지도 확인하십시오.
 
+### `git pull`이 로컬 `build.gradle.kts` 변경 때문에 중단되는 경우
+
+로컬 변경을 삭제하지 말고 먼저 임시 보관한 후 pull합니다. 아래 명령은 `build.gradle.kts`만 stash하므로 다른 작업 파일에는 영향을 주지 않습니다.
+
+```powershell
+git diff -- .\build.gradle.kts
+git stash push -m "local Java build setting before pull" -- .\build.gradle.kts
+git pull
+git log -3 --oneline
+Select-String -Path .\build.gradle.kts -Pattern "javaCompatibility|VERSION_17|JavaLanguageVersion"
+git stash show -p "stash@{0}"
+```
+
+pull된 파일에 이미 `VERSION_17`과 `javaCompatibility`가 있으면 로컬 stash는 같은 목적의 이전 수정일 가능성이 큽니다. `git stash show -p`로 내용을 확인한 뒤 불필요한 경우에만 `git stash drop "stash@{0}"`으로 제거하십시오. 로컬 변경에 별도의 필요한 내용이 있으면 `git stash pop`을 무조건 실행하지 말고 해당 부분만 새 파일에 수동 반영해 충돌을 피하십시오.
+
 ## 주소
 
 | Service | URL |
