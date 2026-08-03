@@ -178,3 +178,11 @@ Get-Content .\common-domain\build\test-results\test\TEST-*.xml
 `Problems report`와 Gradle 9 deprecation 경고는 테스트 실패 원인이 아닙니다. 실제 원인은 콘솔의 `FAILED` 테스트명 아래 또는 `TEST-*.xml`의 `<failure>` 요소에 표시됩니다.
 
 각 Java 모듈은 Gradle Test Executor가 JUnit 5 엔진을 안정적으로 시작하도록 `junit-platform-launcher`를 테스트 런타임 의존성으로 명시합니다. 테스트 클래스명 없이 `:common-domain:test FAILED`만 출력되던 경우 최신 의존성을 받은 뒤 위 명령을 다시 실행하십시오.
+
+콘솔에 테스트명이 계속 나타나지 않으면 더 이상 Gradle 설정을 추측해서 변경하지 말고 다음 진단 스크립트를 실행하십시오. 이 스크립트는 전체 Gradle 로그를 보존하고 생성된 모든 JUnit XML에서 `<failure>`와 `<error>` 원인을 자동 추출합니다.
+
+```powershell
+.\scripts\diagnose-common-domain-tests.ps1
+```
+
+현재 모노레포의 루트 Gradle 프로젝트와 `backend`, `device-server`, `common-domain` 모듈 분리는 일반적인 멀티프로젝트 구조입니다. `common-domain:test` 실패는 폴더 구조가 아니라 테스트 실행 또는 테스트 결과 문제이며, XML 원인을 확인하기 전에는 모듈을 이동하거나 Gradle 구성을 반복 변경하지 않습니다.
