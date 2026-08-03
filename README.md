@@ -59,6 +59,14 @@ IntelliJ에서 Gradle 프로젝트로 연 후 공유 Gradle 설정 `Backend`, `D
 4. `Device Server` 구성을 실행한 뒤 `http://localhost:8081/actuator/health`를 확인합니다.
 5. `Frontend` 구성을 실행하고 `http://localhost:5173`에 접속합니다.
 
+Backend 시작 중 `SQL State: 28000`, `Error Code: 1045`, `Access denied for user 'root'@'localhost'`가 발생하면 Spring/MyBatis bean 문제가 아니라 MySQL 인증 실패입니다. 먼저 애플리케이션과 같은 host/port/user로 직접 로그인한 뒤, 성공한 로컬 비밀번호를 루트 `.env`의 `DB_PASSWORD`에 설정합니다.
+
+```powershell
+mysql -h localhost -P 3306 -u root -p -e "SELECT USER(), CURRENT_USER(), VERSION();"
+```
+
+`.env`에는 실제 비밀번호를 Git에 커밋하지 않고 `DB_USER`, `DB_PASSWORD`, `DB_URL`만 로컬로 설정합니다. Docker MySQL 볼륨이 이미 생성된 뒤 `MYSQL_ROOT_PASSWORD`만 변경해도 기존 root 비밀번호는 자동 변경되지 않으므로, 기존 볼륨의 실제 비밀번호를 사용하거나 MySQL에서 안전하게 계정 비밀번호를 변경해야 합니다.
+
 직접 만든 Application 구성에서 실행 명령에 `-classpath`가 없고 `ClassNotFoundException: com.prima.factory.PrimaFactoryBackendApplication`이 발생하면 해당 구성이 `backend.main` 모듈 classpath를 사용하지 않는 것입니다. 그 구성을 사용하지 말고 공유 `Backend` Gradle 구성을 선택하십시오. IntelliJ Community Edition에서도 Gradle Run Configuration은 사용할 수 있습니다.
 
 ### IntelliJ에서 “관련 Gradle 프로젝트가 연결되어 있지 않음”이 표시될 때
