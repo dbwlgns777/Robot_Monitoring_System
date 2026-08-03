@@ -11,7 +11,16 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_17
     }
     tasks.withType<JavaCompile>().configureEach { options.release = 17 }
-    tasks.withType<Test> { useJUnitPlatform() }
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events("failed", "skipped")
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+        }
+    }
 }
 
 tasks.register("javaCompatibility") {

@@ -165,3 +165,14 @@ Select-String -Path .\backend-compile.log -Pattern "error:|What went wrong" -Con
 진단 로그는 로컬 생성 파일이며 Git에 커밋하지 마십시오. 문제를 보고할 때는 비밀번호나 환경변수 값이 아니라 첫 번째 `error:`의 파일 경로, 줄 번호, 오류 문장과 바로 위아래 코드만 제공하십시오.
 
 Java 17 text block은 여는 `"""` 뒤에 줄바꿈이 반드시 필요합니다. `illegal text block open delimiter sequence, missing line terminator` 오류가 발생했던 `MonitoringMapper.currentEquipment()` SQL은 이 형식에 맞게 수정되어 있습니다.
+
+### Common Domain 테스트 실패 진단
+
+Gradle 테스트는 실패한 테스트명, assertion의 expected/actual 값, 전체 stack trace를 콘솔에 출력하도록 설정되어 있습니다. `:common-domain:test FAILED` 요약만 보이면 다음 명령으로 해당 모듈만 캐시 없이 다시 실행하십시오.
+
+```powershell
+.\gradlew.bat :common-domain:test --rerun-tasks --console=plain
+Get-Content .\common-domain\build\test-results\test\TEST-*.xml
+```
+
+`Problems report`와 Gradle 9 deprecation 경고는 테스트 실패 원인이 아닙니다. 실제 원인은 콘솔의 `FAILED` 테스트명 아래 또는 `TEST-*.xml`의 `<failure>` 요소에 표시됩니다.
