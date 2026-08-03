@@ -187,6 +187,8 @@ mysql -u root -p < database/dump/prima_factory_360_full.sql
 
 로그인 시 `Encoded password does not look like BCrypt` 경고가 발생하면 `system_user.password_hash`가 API에서 `passwordHash`로 매핑되는 최신 Backend인지 확인하십시오. 인증 실패는 500으로 감추지 않고 401/403 상태와 API 오류 응답으로 반환합니다.
 
+개발 Seed의 BCrypt 값은 문서화된 `password`와 일치하도록 테스트합니다. 기존 DB에 잘못된 개발 hash가 있으면 local profile의 repeatable Flyway migration이 `admin` 계정의 개발 hash와 승인·잠금 상태를 갱신합니다. 운영 profile에서는 이 개발 migration을 사용하지 않습니다.
+
 ## Frontend data source
 
 기본값은 `VITE_DATA_SOURCE=api`이며 API 오류를 Mock으로 숨기지 않습니다. 독립 UI 확인에만 `.env`에서 `VITE_DATA_SOURCE=mock`을 사용합니다. Vite proxy가 `/api/v1`과 `/ws`를 8080으로 전달해 session cookie가 유지됩니다.

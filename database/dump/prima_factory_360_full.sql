@@ -57,7 +57,7 @@ INSERT IGNORE INTO role(id,role_code,role_name) VALUES(1,'ROLE_EXECUTIVE','대�
 INSERT IGNORE INTO permission(id,permission_code,permission_name) VALUES(1,'MONITOR_READ','모니터링 조회'),(2,'MASTER_WRITE','기준정보 관리');
 INSERT IGNORE INTO role_permission VALUES(1,1),(2,1),(2,2),(3,1),(3,2);
 -- Development only account: admin / password (BCrypt). Never seed this migration in production profile.
-INSERT IGNORE INTO system_user(id,username,full_name,password_hash,approval_status,is_locked,is_active) VALUES(1,'admin','개발 관리자','$2a$10$7EqJtq98hPqEX7fNZaFWoO5qYd6wfmD4r0I7jQcKjF7e6kBjMEX2u','APPROVED',0,1);
+INSERT IGNORE INTO system_user(id,username,full_name,password_hash,approval_status,is_locked,is_active) VALUES(1,'admin','개발 관리자','$2a$10$wyzaUYXo4NJTynqgVHn.su/gmZAqPF08oHlEeypKegf3CVr4iTPva','APPROVED',0,1);
 INSERT IGNORE INTO user_role VALUES(1,3);
 INSERT INTO service_heartbeat(service_name,status,last_heartbeat_at,details) VALUES('BACKEND','UP',CURRENT_TIMESTAMP(3),'seed'),('DEVICE_SERVER','UP',CURRENT_TIMESTAMP(3),'simulator'),('MYSQL','UP',CURRENT_TIMESTAMP(3),'community 8.x') ON DUPLICATE KEY UPDATE last_heartbeat_at=VALUES(last_heartbeat_at);
 INSERT IGNORE INTO backup_history(started_at,completed_at,status,file_path,size_bytes) VALUES(CURRENT_TIMESTAMP(3)-INTERVAL 8 HOUR,CURRENT_TIMESTAMP(3)-INTERVAL 479 MINUTE,'SUCCESS','/backup/prima_factory_360.sql',1048576);
