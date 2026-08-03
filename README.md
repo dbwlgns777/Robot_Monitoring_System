@@ -73,6 +73,8 @@ IntelliJ에서 Gradle 프로젝트로 연 후 공유 Gradle 설정 `Backend`, `D
 
 `backend/build.gradle.kts` 편집기 상단의 `Gradle 프로젝트 연결`을 바로 누르면 Backend 폴더만 별도 프로젝트로 연결될 수 있으므로 사용하지 않습니다. 반드시 오른쪽 `Gradle` 도구창의 `+` 버튼에서 **저장소 루트의 `settings.gradle.kts`**를 선택하십시오. 연결 후 Gradle 도구창에는 하나의 `prima-factory-360` 루트 아래 `backend`, `common-domain`, `device-server`가 표시되어야 합니다.
 
+`Task 'prepareKotlinBuildScriptModel' not found in project ':backend'`는 `backend/build.gradle.kts`를 독립 프로젝트로 잘못 연결했을 때 발생합니다. Gradle 도구창에서 잘못 연결된 `backend` 항목을 `Unlink Gradle Project`로 제거한 후, `+` 버튼으로 루트 `settings.gradle.kts`만 다시 연결하십시오. 편집기의 `스크립트 구성 로드`는 올바른 루트 연결이 끝난 뒤에 사용합니다.
+
 연결 메뉴가 보이지 않거나 이전 IDE 모델이 남아 있으면 IntelliJ를 닫고 `File > Open`에서 저장소 루트의 `settings.gradle.kts`를 선택한 뒤 `Open as Project`를 선택합니다. `.idea` 폴더나 `backend` 하위 폴더를 별도 프로젝트로 열지 않습니다.
 
 저장소에는 표준 Gradle Wrapper 스크립트와 설정이 포함되어 있으므로 전역 Gradle 설치가 없어도 됩니다. PR 시스템의 바이너리 파일 제한을 피하기 위해 Wrapper JAR는 텍스트 payload인 `gradle-wrapper.jar.b64`로 보관하며, `gradlew` 또는 `gradlew.bat` 첫 실행 시 로컬 JAR로 자동 복원됩니다. 생성된 JAR는 Git에서 제외됩니다. 최초 연결 시 Gradle 배포파일과 Spring 의존성을 내려받으므로 인터넷 연결이 필요합니다.
