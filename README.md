@@ -49,7 +49,7 @@ docker compose up -d mysql
 npm --prefix frontend run dev
 ```
 
-IntelliJ에서 Gradle 프로젝트로 연 후 공유 설정 `Backend`, `Device Server`, `Frontend`를 개별 실행하거나 compound 설정 `PRIMA FACTORY 360`을 실행할 수 있습니다.
+IntelliJ에서 Gradle 프로젝트로 연 후 공유 Gradle 설정 `Backend`, `Device Server`, `Frontend`를 개별 실행하거나 compound 설정 `PRIMA FACTORY 360`을 실행할 수 있습니다. 서버 공유 설정은 IDE의 모듈 classpath 추론에 의존하지 않고 각각 `:backend:bootRun`, `:device-server:bootRun`을 실행합니다.
 
 `clean test bootJar` 성공 후에는 MySQL을 먼저 실행하고 루트 `.env`를 준비한 다음 IntelliJ 상단 실행 구성에서 `Backend`를 선택해 Run할 수 있습니다. 공유 Run Configuration은 루트 `.env`를 읽을 수 있도록 Working directory를 `$PROJECT_DIR$`로 고정합니다.
 
@@ -59,7 +59,7 @@ IntelliJ에서 Gradle 프로젝트로 연 후 공유 설정 `Backend`, `Device S
 4. `Device Server` 구성을 실행한 뒤 `http://localhost:8081/actuator/health`를 확인합니다.
 5. `Frontend` 구성을 실행하고 `http://localhost:5173`에 접속합니다.
 
-IntelliJ Community Edition에서 Spring Boot Run Configuration 유형을 사용할 수 없다면 `backend/src/main/java/com/prima/factory/PrimaFactoryBackendApplication.java`를 열고 `main` 메서드 옆 실행 아이콘으로 일반 Application 실행을 생성하십시오. 이 경우에도 Working directory는 저장소 루트, JRE는 Temurin 17로 지정해야 합니다.
+직접 만든 Application 구성에서 실행 명령에 `-classpath`가 없고 `ClassNotFoundException: com.prima.factory.PrimaFactoryBackendApplication`이 발생하면 해당 구성이 `backend.main` 모듈 classpath를 사용하지 않는 것입니다. 그 구성을 사용하지 말고 공유 `Backend` Gradle 구성을 선택하십시오. IntelliJ Community Edition에서도 Gradle Run Configuration은 사용할 수 있습니다.
 
 ### IntelliJ에서 “관련 Gradle 프로젝트가 연결되어 있지 않음”이 표시될 때
 
