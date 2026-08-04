@@ -33,3 +33,5 @@ All responses use `{ "success": true, "data": ..., "message": null }`; errors us
 | Collection | `GET /system/collection-health` | collection health rows |
 
 STOMP endpoint `/ws`; topics `/topic/equipment-status`, `/topic/dashboard-kpi`, `/topic/collection-health`. Quality-unlinked KPI is `{qualityDataLinked:false, ppm:null, oee:null}`. Estimated loss is missed production, not defects.
+
+Realtime equipment REST rows and `/topic/equipment-status` messages include `dynamicTags: Record<string, unknown>`. Keys are collector-defined and optional; clients must not assume a fixed tag list or value type.

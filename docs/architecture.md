@@ -10,3 +10,7 @@ Frontend -- STOMP unavailable --> 1 s REST polling
 ```
 
 The simulator is the only random-data producer. Backend queries `equipment_current_state` in one batch and never uses `ORDER BY RAND()`. `EquipmentDataCollector` exposes collection only; future MC Protocol and Modbus implementations must remain READ-only. UTC is stored in DB/API and rendered for `Asia/Seoul` by the client.
+
+## Simulator-to-real collector telemetry contract
+
+The simulator and future READ-only robot collectors share `EquipmentDataCollector`. Both write stable monitoring fields into typed columns and unknown manufacturer/model-specific values into the `dynamic_tags` JSON extension. Backend REST and STOMP responses expose `dynamicTags` as a key/value object. The realtime equipment drawer renders those keys generically, so replacing the simulator with a real collector does not require frontend changes merely because new tags appear.

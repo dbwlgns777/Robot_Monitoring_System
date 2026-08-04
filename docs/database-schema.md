@@ -33,3 +33,9 @@ All tables use InnoDB/utf8mb4. Exact executable definitions, nullability, defaul
 | report_history / robot_axis_telemetry | report metadata / axis values | Supporting data |
 
 Every mutable master table includes `created_at` and `updated_at`; full column definitions and defaults are in the executable migration.
+
+## Dynamic robot tags
+
+Stable fields used for status, counts, cycle time, health, and filtering remain typed columns. Robot fields that are not known yet are stored in the nullable `dynamic_tags` JSON column on `robot_telemetry` (history) and `equipment_current_state` (latest snapshot). The JSON object is an extension payload, not a fixed list of robot tags. Device collectors may add or omit keys without a schema migration. When a tag becomes stable and is frequently filtered or aggregated, it should be promoted to a typed column while remaining compatible with the JSON payload.
+
+This is intentionally a hybrid model rather than a JSON-only model. Typed numeric columns avoid repeating tag names in every telemetry row and are more compact and index-friendly. JSON is reserved for sparse or not-yet-defined values, where avoiding premature schema migrations is more important than minimum row size. Retention and down-sampling must be configured before production-scale collection because the historical table receives one row per robot per collection interval.

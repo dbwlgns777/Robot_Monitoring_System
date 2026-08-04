@@ -28,6 +28,7 @@ public interface ZES_MonitoringMapper
                s.production_count actual,
                s.cycle_time cycleTime,
                s.current_alarm alarm,
+               s.dynamic_tags dynamicTags,
                s.collected_at lastReceived,
                s.response_ms responseMs,
                e.is_active enabled,
@@ -72,8 +73,24 @@ public interface ZES_MonitoringMapper
     @Select("SELECT * FROM maintenance_history ORDER BY scheduled_at DESC LIMIT 50")
     List<Map<String, Object>> ZES_maintenance();
 
-    @Select("SELECT * FROM equipment WHERE id=#{ZES_id}")
-    Map<String, Object> ZES_equipment(@Param("ZES_id") long ZES_id);
+    @Select("""
+        SELECT e.id,e.equipment_code code,e.equipment_name name,e.line_id lineId,
+               e.equipment_type type,s.display_status status,
+               s.operating_status operatingStatus,s.communication_status communicationStatus,
+               s.status_started_at statusStartedAt,p.product_name product,
+               COALESCE(pp.target_quantity,0) target,s.production_count actual,
+               s.cycle_time cycleTime,s.current_alarm alarm,s.dynamic_tags dynamicTags,
+               s.collected_at lastReceived,s.response_ms responseMs,e.is_active enabled,
+               e.manufacturer,e.model,c.ip_address ip,c.protocol
+          FROM equipment e
+          JOIN equipment_current_state s ON s.equipment_id=e.id
+          LEFT JOIN equipment_connection c ON c.equipment_id=e.id
+          LEFT JOIN production_plan pp ON pp.line_id=e.line_id
+           AND pp.production_date=CURRENT_DATE AND pp.status='IN_PROGRESS'
+          LEFT JOIN product p ON p.id=pp.product_id
+         WHERE e.id=#{ZES_id}
+        """)
+    Map<String, Object> ZES_currentEquipmentById(@Param("ZES_id") long ZES_id);
 
     @Select("SELECT * FROM robot_telemetry WHERE equipment_id=#{ZES_id} ORDER BY collected_at DESC LIMIT #{ZES_limit}")
     List<Map<String, Object>> ZES_trend(

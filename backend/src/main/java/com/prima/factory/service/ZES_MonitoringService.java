@@ -3,8 +3,13 @@ package com.prima.factory.service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
+import java.io.IOException;
 
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prima.factory.mapper.ZES_MonitoringMapper;
@@ -13,10 +18,13 @@ import com.prima.factory.mapper.ZES_MonitoringMapper;
 public class ZES_MonitoringService
 {
     private final ZES_MonitoringMapper ZES_mapper;
+    private final ObjectMapper ZES_objectMapper;
 
-    public ZES_MonitoringService(ZES_MonitoringMapper ZES_mapper)
+    public ZES_MonitoringService(
+        ZES_MonitoringMapper ZES_mapper, ObjectMapper ZES_objectMapper)
     {
         this.ZES_mapper = ZES_mapper;
+        this.ZES_objectMapper = ZES_objectMapper;
     }
 
     public List<Map<String, Object>> ZES_factories()
@@ -31,17 +39,21 @@ public class ZES_MonitoringService
 
     public List<Map<String, Object>> ZES_equipment()
     {
-        return ZES_mapper.ZES_currentEquipment();
+        return ZES_mapper.ZES_currentEquipment().stream()
+            .map(this::ZES_withParsedDynamicTags)
+            .toList();
     }
 
     public Map<String, Object> ZES_equipment(long ZES_id)
     {
-        return ZES_mapper.ZES_equipment(ZES_id);
+        return ZES_withParsedDynamicTags(ZES_mapper.ZES_currentEquipmentById(ZES_id));
     }
 
     public List<Map<String, Object>> ZES_trend(long ZES_id)
     {
-        return ZES_mapper.ZES_trend(ZES_id, 60);
+        return ZES_mapper.ZES_trend(ZES_id, 60).stream()
+            .map(this::ZES_withParsedDynamicTags)
+            .toList();
     }
 
     public List<Map<String, Object>> ZES_collection()
@@ -128,4 +140,55 @@ public class ZES_MonitoringService
     {
         return ZES_mapper.ZES_maintenance();
     }
+
+    private Map<String, Object> ZES_withParsedDynamicTags(Map<String, Object> ZES_row)
+    {
+        if (ZES_row == null)
+        {
+            return Map.of();
+        }
+        Map<String, Object> ZES_result = new LinkedHashMap<>(ZES_row);
+        Object ZES_rawTags = ZES_result.get("dynamicTags");
+        if (ZES_rawTags instanceof String ZES_json && !ZES_json.isBlank())
+        {
+            ZES_result.put("dynamicTags", ZES_parseDynamicTags(ZES_json));
+        }
+        else if (ZES_rawTags instanceof byte[] ZES_json)
+        {
+            ZES_result.put("dynamicTags", ZES_parseDynamicTags(ZES_json));
+        }
+        else if (!(ZES_rawTags instanceof Map))
+        {
+            ZES_result.put("dynamicTags", Map.of());
+        }
+        return ZES_result;
+    }
+
+
+    private Map<String, Object> ZES_parseDynamicTags(String ZES_json)
+    {
+        try
+        {
+            return ZES_objectMapper.readValue(
+                ZES_json, new TypeReference<Map<String, Object>>() { });
+        }
+        catch (IOException ZES_exception)
+        {
+            return Map.of();
+        }
+    }
+
+    private Map<String, Object> ZES_parseDynamicTags(byte[] ZES_json)
+    {
+        try
+        {
+            return ZES_objectMapper.readValue(
+                ZES_json, new TypeReference<Map<String, Object>>() { });
+        }
+        catch (IOException ZES_exception)
+        {
+            return Map.of();
+        }
+    }
+
 }
