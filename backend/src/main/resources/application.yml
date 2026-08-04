@@ -17,3 +17,4 @@ server:
 management.endpoints.web.exposure.include: health,info
 springdoc.swagger-ui.path: /swagger-ui.html
 mybatis.configuration.map-underscore-to-camel-case: true
+monitoring.realtime-publish-ms: ${REALTIME_PUBLISH_MS:1000}

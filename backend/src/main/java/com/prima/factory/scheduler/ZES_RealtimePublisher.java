@@ -19,7 +19,7 @@ public class ZES_RealtimePublisher
         this.ZES_messagingTemplate = ZES_messagingTemplate;
     }
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedRateString = "${monitoring.realtime-publish-ms:1000}")
     void ZES_publish()
     {
         var ZES_equipment = ZES_monitoringService.ZES_equipment();
