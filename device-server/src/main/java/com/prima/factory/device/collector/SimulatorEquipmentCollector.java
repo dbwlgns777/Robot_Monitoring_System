@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class SimulatorEquipmentCollector implements EquipmentDataCollector
     private final ObjectMapper objectMapper;
     private final ConcurrentMap<Long, TelemetryState> states = new ConcurrentHashMap<>();
 
+    @Autowired
     public SimulatorEquipmentCollector(
         JdbcTemplate db,
         ObjectMapper objectMapper,
